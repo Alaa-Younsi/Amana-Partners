@@ -1,0 +1,155 @@
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import {
+  Outlet,
+  Link,
+  createRootRouteWithContext,
+  useRouter,
+  HeadContent,
+  Scripts,
+} from "@tanstack/react-router";
+import { useEffect, type ReactNode } from "react";
+
+import appCss from "../styles.css?url";
+import {
+  DEFAULT_DESCRIPTION,
+  DEFAULT_TITLE,
+  OG_IMAGE,
+  SITE_NAME,
+  SITE_URL,
+  organizationJsonLd,
+} from "../lib/site";
+import { LanguageProvider, useTranslation } from "../lib/i18n";
+
+function NotFoundComponent() {
+  const { t } = useTranslation();
+  return (
+    <div className="flex min-h-screen items-center justify-center bg-background px-6">
+      <div className="max-w-md text-center">
+        <p className="eyebrow">{t.notFound.errorLabel}</p>
+        <h1 className="mt-4 font-display text-6xl">{t.notFound.title}</h1>
+        <p className="mt-4 text-sm text-muted-foreground">{t.notFound.body}</p>
+        <div className="mt-8">
+          <Link
+            to="/"
+            className="inline-flex items-center border border-navy px-6 py-3 text-[0.72rem] uppercase tracking-[0.2em] text-navy hover:bg-navy hover:text-ivory"
+          >
+            {t.notFound.returnHome}
+          </Link>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function ErrorComponent({ error, reset }: { error: Error; reset: () => void }) {
+  const router = useRouter();
+  const { t } = useTranslation();
+  useEffect(() => {
+    console.error(error);
+  }, [error]);
+
+  return (
+    <div className="flex min-h-screen items-center justify-center bg-background px-6">
+      <div className="max-w-md text-center">
+        <p className="eyebrow">{t.errorPage.eyebrow}</p>
+        <h1 className="mt-4 font-display text-4xl">{t.errorPage.title}</h1>
+        <p className="mt-4 text-sm text-muted-foreground">{t.errorPage.body}</p>
+        <div className="mt-8 flex flex-wrap justify-center gap-3">
+          <button
+            onClick={() => {
+              router.invalidate();
+              reset();
+            }}
+            className="border border-navy bg-navy px-6 py-3 text-[0.72rem] uppercase tracking-[0.2em] text-ivory"
+          >
+            {t.errorPage.tryAgain}
+          </button>
+          <a
+            href="/"
+            className="border border-navy px-6 py-3 text-[0.72rem] uppercase tracking-[0.2em] text-navy hover:bg-navy hover:text-ivory"
+          >
+            {t.errorPage.goHome}
+          </a>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()({
+  head: () => ({
+    meta: [
+      { charSet: "utf-8" },
+      { name: "viewport", content: "width=device-width, initial-scale=1" },
+      { title: DEFAULT_TITLE },
+      { name: "description", content: DEFAULT_DESCRIPTION },
+      { name: "author", content: "Amana Partners LLC" },
+      { name: "theme-color", content: "#0d1830" },
+      { name: "robots", content: "index, follow, max-image-preview:large" },
+      { property: "og:site_name", content: SITE_NAME },
+      { property: "og:title", content: DEFAULT_TITLE },
+      { property: "og:description", content: DEFAULT_DESCRIPTION },
+      { property: "og:type", content: "website" },
+      { property: "og:url", content: SITE_URL },
+      { property: "og:locale", content: "en_GB" },
+      { property: "og:image", content: OG_IMAGE },
+      { property: "og:image:alt", content: "Amana Partners" },
+      { name: "twitter:card", content: "summary_large_image" },
+      { name: "twitter:title", content: DEFAULT_TITLE },
+      { name: "twitter:description", content: DEFAULT_DESCRIPTION },
+      { name: "twitter:image", content: OG_IMAGE },
+    ],
+    links: [
+      { rel: "stylesheet", href: appCss },
+      { rel: "icon", href: "/favicon.svg", type: "image/svg+xml" },
+      { rel: "apple-touch-icon", href: "/logo.jpeg" },
+      { rel: "canonical", href: SITE_URL },
+      { rel: "preconnect", href: "https://fonts.googleapis.com" },
+      { rel: "preconnect", href: "https://fonts.gstatic.com", crossOrigin: "anonymous" },
+      {
+        rel: "stylesheet",
+        href: "https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;500;600&family=Inter:wght@300;400;500;600&family=Cairo:wght@400;500;600;700&family=Tajawal:wght@300;400;500;700&display=swap",
+      },
+    ],
+    scripts: [
+      {
+        type: "application/ld+json",
+        children: JSON.stringify(organizationJsonLd()),
+      },
+      {
+        // Arms the scroll-reveal styles before first paint. Without scripting
+        // the attribute is never set and all content renders normally.
+        children: `document.documentElement.setAttribute("data-anim","on")`,
+      },
+    ],
+  }),
+  shellComponent: RootShell,
+  component: RootComponent,
+  notFoundComponent: NotFoundComponent,
+  errorComponent: ErrorComponent,
+});
+
+function RootShell({ children }: { children: ReactNode }) {
+  return (
+    <html lang="en">
+      <head>
+        <HeadContent />
+      </head>
+      <body>
+        {children}
+        <Scripts />
+      </body>
+    </html>
+  );
+}
+
+function RootComponent() {
+  const { queryClient } = Route.useRouteContext();
+  return (
+    <QueryClientProvider client={queryClient}>
+      <LanguageProvider>
+        <Outlet />
+      </LanguageProvider>
+    </QueryClientProvider>
+  );
+}

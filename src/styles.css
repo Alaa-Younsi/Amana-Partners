@@ -1,0 +1,425 @@
+@import "tailwindcss" source(none);
+@source "../src";
+@import "tw-animate-css";
+
+@custom-variant dark (&:is(.dark *));
+
+@theme inline {
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+
+  /* Brand — sampled from the Amana Partners logo */
+  --color-navy: var(--navy);
+  --color-navy-deep: var(--navy-deep);
+  --color-navy-soft: var(--navy-soft);
+  --color-gold: var(--gold);
+  --color-gold-light: var(--gold-light);
+  --color-gold-deep: var(--gold-deep);
+  --color-ivory: var(--ivory);
+}
+
+/* Not inlined (unlike the theme block above) so `html[dir="rtl"]` can
+   override these at runtime and re-font every `font-display`/`font-sans`
+   utility across the site for the Arabic locale without touching call sites. */
+@theme {
+  --font-display: "Cormorant Garamond", "Times New Roman", serif;
+  --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
+}
+
+html[dir="rtl"] {
+  --font-display: "Cairo", "Tajawal", "Segoe UI", sans-serif;
+  --font-sans: "Tajawal", "Segoe UI", ui-sans-serif, system-ui, sans-serif;
+}
+
+/* The Latin design leans on wide letter-tracking (eyebrows, buttons,
+   headings) for its editorial feel — that reads as broken spacing in
+   Arabic script, so it's neutralized wholesale for the RTL locale. */
+html[dir="rtl"] * {
+  letter-spacing: normal !important;
+}
+
+:root {
+  --radius: 0.25rem;
+
+  /* Brand palette — taken directly from the logo artwork */
+  --navy-deep: #0d1830;
+  --navy: #1b2b4d;
+  --navy-soft: #2c3f68;
+  --gold: #c0a063;
+  --gold-light: #dcc08c;
+  --gold-deep: #a8874a;
+  --ivory: #faf8f4;
+
+  --background: var(--ivory);
+  --foreground: var(--navy-deep);
+  --card: #ffffff;
+  --card-foreground: var(--navy-deep);
+  --popover: #ffffff;
+  --popover-foreground: var(--navy-deep);
+  --primary: var(--navy);
+  --primary-foreground: var(--ivory);
+  --secondary: #f3efe7;
+  --secondary-foreground: var(--navy);
+  --muted: #f2eee6;
+  --muted-foreground: #6b7489;
+  --accent: var(--gold);
+  --accent-foreground: var(--navy-deep);
+  --destructive: #b3261e;
+  --destructive-foreground: #ffffff;
+  --border: #e6e0d4;
+  --input: #e6e0d4;
+  --ring: var(--gold);
+
+  /* Elevation — warm, low-contrast shadows that suit an ivory ground */
+  --shadow-soft: 0 1px 2px rgba(13, 24, 48, 0.04), 0 8px 24px rgba(13, 24, 48, 0.06);
+  --shadow-lift: 0 2px 4px rgba(13, 24, 48, 0.05), 0 18px 48px rgba(13, 24, 48, 0.12);
+  --shadow-deep: 0 4px 8px rgba(13, 24, 48, 0.08), 0 32px 80px rgba(13, 24, 48, 0.18);
+}
+
+@layer base {
+  * {
+    border-color: var(--color-border);
+  }
+
+  html {
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    scroll-behavior: smooth;
+  }
+
+  body {
+    background-color: var(--color-background);
+    color: var(--color-foreground);
+    font-family: var(--font-sans);
+    font-feature-settings: "ss01", "cv11";
+    overflow-x: hidden;
+  }
+
+  h1,
+  h2,
+  h3,
+  h4 {
+    font-family: var(--font-display);
+    font-weight: 400;
+    letter-spacing: -0.015em;
+  }
+
+  ::selection {
+    background: var(--gold);
+    color: var(--navy-deep);
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--gold);
+    outline-offset: 3px;
+  }
+
+  /* Keep the sticky header from covering anchored sections */
+  [id] {
+    scroll-margin-top: 6rem;
+  }
+}
+
+/* ---------------------------------------------------------------- layout */
+
+@utility container-x {
+  width: 100%;
+  margin-inline: auto;
+  padding-inline: 1.5rem;
+  max-width: 78rem;
+}
+
+@utility eyebrow {
+  font-family: var(--font-sans);
+  font-size: 0.7rem;
+  font-weight: 500;
+  letter-spacing: 0.28em;
+  text-transform: uppercase;
+  color: var(--gold);
+}
+
+@utility hairline {
+  display: inline-block;
+  width: 2.5rem;
+  height: 1px;
+  background: var(--gold);
+  vertical-align: middle;
+}
+
+@utility gold-underline {
+  position: relative;
+  &::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    bottom: -4px;
+    width: 100%;
+    height: 1px;
+    background: var(--gold);
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform 0.4s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+  &:hover::after,
+  &:focus-visible::after {
+    transform: scaleX(1);
+  }
+}
+
+/* Thin gold rule that grows out of the left edge on hover of a parent group */
+@utility rule-grow {
+  height: 1px;
+  width: 2.5rem;
+  background: var(--gold);
+  transition: width 0.5s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+/* ------------------------------------------------------------------- 3D */
+
+@utility scene {
+  perspective: 1400px;
+  perspective-origin: 50% 40%;
+}
+
+@utility scene-tight {
+  perspective: 800px;
+}
+
+/* Card that tilts toward the pointer. --rx/--ry are written by useTilt(). */
+@utility tilt-3d {
+  transform-style: preserve-3d;
+  transform: rotateX(var(--rx, 0deg)) rotateY(var(--ry, 0deg)) translateZ(0);
+  transition:
+    transform 0.45s cubic-bezier(0.22, 1, 0.36, 1),
+    box-shadow 0.45s ease;
+  will-change: transform;
+}
+
+@utility tilt-3d-active {
+  transition:
+    transform 0.08s linear,
+    box-shadow 0.45s ease;
+}
+
+/* Children of a tilt-3d card float above its surface */
+@utility layer-1 {
+  transform: translateZ(28px);
+}
+
+@utility layer-2 {
+  transform: translateZ(52px);
+}
+
+@utility layer-3 {
+  transform: translateZ(80px);
+}
+
+/* Plain elevation-on-hover, no pointer tracking */
+@utility lift {
+  transition:
+    transform 0.5s cubic-bezier(0.22, 1, 0.36, 1),
+    box-shadow 0.5s cubic-bezier(0.22, 1, 0.36, 1),
+    border-color 0.5s ease;
+  &:hover {
+    transform: translateY(-6px);
+    box-shadow: var(--shadow-lift);
+  }
+}
+
+/* Glass panel used over the navy sections */
+@utility glass {
+  background: rgba(255, 255, 255, 0.06);
+  backdrop-filter: blur(14px) saturate(140%);
+  -webkit-backdrop-filter: blur(14px) saturate(140%);
+  border: 1px solid rgba(220, 192, 140, 0.18);
+}
+
+/* Hairline gold gradient border via double background */
+@utility gold-frame {
+  border: 1px solid transparent;
+  background:
+    linear-gradient(var(--card), var(--card)) padding-box,
+    linear-gradient(
+        135deg,
+        rgba(192, 160, 99, 0.55),
+        rgba(192, 160, 99, 0.05) 45%,
+        rgba(192, 160, 99, 0.45)
+      )
+      border-box;
+}
+
+/* Specular sheen that sweeps across a card on hover */
+@utility sheen {
+  position: relative;
+  overflow: hidden;
+  &::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(
+      115deg,
+      transparent 30%,
+      rgba(255, 255, 255, 0.5) 48%,
+      transparent 62%
+    );
+    transform: translateX(-120%);
+    transition: transform 0.9s cubic-bezier(0.22, 1, 0.36, 1);
+    pointer-events: none;
+  }
+  &:hover::after {
+    transform: translateX(120%);
+  }
+}
+
+/* ------------------------------------------------------- scroll reveals */
+
+/*
+ * Reveals are gated on [data-anim="on"], which a tiny head script sets. If
+ * scripting is unavailable or fails, the attribute is never written and the
+ * content simply renders — no permanently-invisible sections.
+ *
+ * These are plain rules, not @utility: they must stay scoped to the attribute,
+ * and `reveal-3d` is only ever applied to a wrapper, never to a `tilt-3d`
+ * element (its `transform: none` end-state would freeze the pointer tilt).
+ */
+[data-anim="on"] .reveal {
+  opacity: 0;
+  transform: translateY(28px);
+  transition:
+    opacity 0.9s cubic-bezier(0.22, 1, 0.36, 1),
+    transform 0.9s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+[data-anim="on"] .reveal-3d {
+  opacity: 0;
+  transform: perspective(1200px) rotateX(12deg) translateY(40px);
+  transform-origin: 50% 100%;
+  transition:
+    opacity 1s cubic-bezier(0.22, 1, 0.36, 1),
+    transform 1s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+[data-anim="on"] .reveal.is-visible,
+[data-anim="on"] .reveal-3d.is-visible {
+  opacity: 1;
+  transform: none;
+}
+
+/* --------------------------------------------------------- keyframes */
+
+@keyframes float-slow {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-12px);
+  }
+}
+
+@keyframes pulse-ring {
+  0% {
+    transform: scale(0.6);
+    opacity: 0.9;
+  }
+  70% {
+    transform: scale(2.4);
+    opacity: 0;
+  }
+  100% {
+    transform: scale(2.4);
+    opacity: 0;
+  }
+}
+
+@keyframes draw-arc {
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+
+@keyframes shimmer-text {
+  0% {
+    background-position: 200% center;
+  }
+  100% {
+    background-position: -200% center;
+  }
+}
+
+@keyframes marquee-x {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-50%);
+  }
+}
+
+@utility animate-float-slow {
+  animation: float-slow 7s ease-in-out infinite;
+}
+
+@utility animate-marquee {
+  animation: marquee-x 38s linear infinite;
+}
+
+/* Gold shimmer sweep for a single emphasised word */
+@utility shimmer {
+  /* Stays inside the gold range — a near-white stop would wash the word out
+     against the ivory ground. */
+  background: linear-gradient(
+    100deg,
+    var(--gold-deep) 20%,
+    var(--gold) 42%,
+    var(--gold-light) 50%,
+    var(--gold) 58%,
+    var(--gold-deep) 80%
+  );
+  background-size: 200% auto;
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  animation: shimmer-text 7s linear infinite;
+}
+
+/* ------------------------------------------------ reduced-motion escape */
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+  }
+  [data-anim="on"] .reveal,
+  [data-anim="on"] .reveal-3d {
+    opacity: 1 !important;
+    transform: none !important;
+  }
+}
