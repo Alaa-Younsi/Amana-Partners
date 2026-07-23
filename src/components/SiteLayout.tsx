@@ -1,4 +1,4 @@
-import { Link } from "@tanstack/react-router";
+import { Link, useRouterState } from "@tanstack/react-router";
 import { useEffect, useState, type ReactNode } from "react";
 import { ArrowUpRight, Menu, X } from "lucide-react";
 
@@ -46,6 +46,14 @@ export function SiteHeader() {
   const { t } = useTranslation();
   const NAV = NAV_ROUTES.map((n) => ({ to: n.to, label: t.nav[n.key] }));
 
+  const pathname = useRouterState({ select: (s) => s.location.pathname });
+  const isHome = pathname === "/";
+  // Every interior page opens on a dark (navy) PageHero, not the home page's
+  // light ivory hero — so before scroll (when the header itself is still
+  // transparent) its text needs to be light there, not the navy used on
+  // home. Once the mobile overlay is open, it's always a navy backdrop too.
+  const lightHeader = open || (!scrolled && !isHome);
+
   // Lock body scroll and allow Escape to dismiss while the overlay is open.
   useEffect(() => {
     if (!open) return;
@@ -71,7 +79,7 @@ export function SiteHeader() {
       </a>
 
       <header
-        className={`fixed inset-x-0 top-0 z-50 transition-[background-color,box-shadow,backdrop-filter] duration-500 ${
+        className={`fixed inset-x-0 top-0 z-[70] transition-[background-color,box-shadow,backdrop-filter] duration-500 ${
           scrolled
             ? "bg-background/80 shadow-[0_1px_0_0_rgba(230,224,212,1),0_10px_40px_-24px_rgba(13,24,48,0.45)] backdrop-blur-xl"
             : "bg-transparent"
@@ -83,7 +91,7 @@ export function SiteHeader() {
           }`}
         >
           <Link to="/" className="group" aria-label={t.common.homeAriaLabel}>
-            <LogoLockup />
+            <LogoLockup light={lightHeader} />
           </Link>
 
           <nav className="hidden items-center gap-8 lg:flex" aria-label={t.common.primaryNav}>
@@ -92,8 +100,12 @@ export function SiteHeader() {
                 key={n.to}
                 to={n.to}
                 activeOptions={{ exact: n.to === "/" }}
-                className="gold-underline text-[0.72rem] font-medium uppercase tracking-[0.2em] text-foreground/70 transition-colors duration-300 hover:text-navy"
-                activeProps={{ style: { color: "var(--navy)" } }}
+                className={`gold-underline text-[0.72rem] font-medium uppercase tracking-[0.2em] transition-colors duration-300 ${
+                  lightHeader
+                    ? "text-ivory/75 hover:text-gold"
+                    : "text-foreground/70 hover:text-navy"
+                }`}
+                activeProps={{ style: { color: lightHeader ? "var(--gold)" : "var(--navy)" } }}
               >
                 {n.label}
               </Link>
@@ -101,13 +113,17 @@ export function SiteHeader() {
           </nav>
 
           <div className="hidden items-center gap-4 lg:flex">
-            <LanguageToggle />
-            <CtaButton to="/contact">{t.nav.consultation}</CtaButton>
+            <LanguageToggle light={lightHeader} />
+            <CtaButton to="/contact" variant={lightHeader ? "ghost" : "outline"}>
+              {t.nav.consultation}
+            </CtaButton>
           </div>
 
           <button
             type="button"
-            className="relative z-[60] flex h-11 w-11 items-center justify-center text-navy lg:hidden"
+            className={`relative flex h-11 w-11 items-center justify-center transition-colors duration-300 lg:hidden ${
+              lightHeader ? "text-ivory" : "text-navy"
+            }`}
             onClick={() => setOpen((v) => !v)}
             aria-label={open ? t.common.closeMenu : t.common.openMenu}
             aria-expanded={open}
@@ -140,7 +156,32 @@ export function SiteHeader() {
             open ? "opacity-100" : "opacity-0"
           }`}
           style={{ backgroundColor: "var(--navy-deep)" }}
-        />
+        >
+          <div
+            aria-hidden="true"
+            className="pointer-events-none absolute inset-0 opacity-[0.14]"
+            style={{
+              backgroundImage:
+                "linear-gradient(var(--gold) 1px, transparent 1px), linear-gradient(90deg, var(--gold) 1px, transparent 1px)",
+              backgroundSize: "56px 56px",
+              transform: "perspective(700px) rotateX(58deg) scale(2.2)",
+              transformOrigin: "50% 100%",
+              maskImage: "linear-gradient(to top, black, transparent 72%)",
+              WebkitMaskImage: "linear-gradient(to top, black, transparent 72%)",
+            }}
+          />
+          <div
+            aria-hidden="true"
+            className="pointer-events-none absolute -top-24 end-[-4rem] h-72 w-72 rounded-full opacity-20 blur-3xl"
+            style={{ background: "radial-gradient(circle, var(--gold), transparent 70%)" }}
+          />
+          <LogoMark
+            decorative
+            className="pointer-events-none absolute -bottom-14 end-2 h-64 w-64 opacity-[0.06] animate-float-slow"
+            navy="var(--ivory)"
+            gold="var(--gold)"
+          />
+        </div>
         <nav
           className="container-x relative flex h-full flex-col justify-center gap-2"
           aria-label={t.common.mobileNav}
@@ -150,6 +191,8 @@ export function SiteHeader() {
               key={n.to}
               to={n.to}
               onClick={() => setOpen(false)}
+              activeOptions={{ exact: n.to === "/" }}
+              activeProps={{ style: { color: "var(--gold)" } }}
               tabIndex={open ? 0 : -1}
               className="border-b border-ivory/10 py-5 font-display text-3xl text-ivory transition-all duration-500"
               style={{

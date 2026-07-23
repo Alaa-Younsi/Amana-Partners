@@ -75,22 +75,31 @@ export function TiltCard({
   className = "",
   max = 7,
   reveal = true,
+  fill = true,
 }: {
   children: ReactNode;
   className?: string;
   max?: number;
   /** Scroll-reveal the card. Applied to the wrapper, never to the tilt layer. */
   reveal?: boolean;
+  /**
+   * Stretch to fill the parent's height — what you want for a row of cards
+   * that should match heights. Set `false` for a standalone card (e.g. a
+   * single photo next to unrelated copy), otherwise a taller sibling in a
+   * CSS Grid row will stretch this one well past its own content and leave
+   * empty space below it.
+   */
+  fill?: boolean;
 }) {
   const tilt = useTilt<HTMLDivElement>(max);
   return (
-    <div className={`scene h-full ${reveal ? "reveal-3d" : ""}`}>
+    <div className={`scene ${fill ? "h-full" : ""} ${reveal ? "reveal-3d" : ""}`}>
       <div
         ref={tilt.ref}
         onPointerMove={tilt.onPointerMove}
         onPointerEnter={tilt.onPointerEnter}
         onPointerLeave={tilt.onPointerLeave}
-        className={`tilt-3d sheen h-full ${className}`}
+        className={`tilt-3d sheen ${fill ? "h-full" : ""} ${className}`}
       >
         {children}
       </div>

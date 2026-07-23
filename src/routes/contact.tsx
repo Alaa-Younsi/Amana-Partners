@@ -1,23 +1,35 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { useId, useState } from "react";
+import { useId, useRef, useState } from "react";
 
 import { SiteLayout, PageHero } from "@/components/SiteLayout";
 import { Section } from "@/components/Primitives";
 import { useTranslation } from "@/lib/i18n";
+import { breadcrumbJsonLd, routeUrlTags } from "@/lib/site";
 
 export const Route = createFileRoute("/contact")({
-  head: () => ({
-    meta: [
-      { title: "Private Consultation — Amana Partners" },
-      {
-        name: "description",
-        content:
-          "Request a private, confidential consultation with Amana Partners in Madrid, Dubai, or by secure video.",
-      },
-      { property: "og:title", content: "Private Consultation — Amana Partners" },
-      { property: "og:description", content: "Begin the conversation in confidence." },
-    ],
-  }),
+  head: () => {
+    const { links, meta } = routeUrlTags("/contact");
+    return {
+      meta: [
+        { title: "Private Consultation — Amana Partners" },
+        {
+          name: "description",
+          content:
+            "Request a private, confidential consultation with Amana Partners in Madrid, Dubai, or by secure video.",
+        },
+        { property: "og:title", content: "Private Consultation — Amana Partners" },
+        { property: "og:description", content: "Begin the conversation in confidence." },
+        ...meta,
+      ],
+      links,
+      scripts: [
+        {
+          type: "application/ld+json",
+          children: JSON.stringify(breadcrumbJsonLd("Contact", "/contact")),
+        },
+      ],
+    };
+  },
   component: Contact,
 });
 
@@ -27,15 +39,22 @@ function Contact() {
   const interestId = useId();
   const messageId = useId();
   const honeypotId = useId();
+  // Bots that skip the honeypot still tend to fill and submit a form in well
+  // under a second; a real visitor can't. Client-side only — a real signal,
+  // but not enforcement, which has to happen server-side once a submission
+  // endpoint exists (see TODO below).
+  const mountedAt = useRef(Date.now());
 
   function onSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
     const form = event.currentTarget;
-    // Bots fill every field, including the one hidden from humans.
-    if ((form.elements.namedItem("company_website") as HTMLInputElement)?.value) {
+    const honeypotFilled = (form.elements.namedItem("company_website") as HTMLInputElement)?.value;
+    const submittedTooFast = Date.now() - mountedAt.current < 1500;
+    if (honeypotFilled || submittedTooFast) {
       return;
     }
-    // TODO(client): POST to the real enquiry endpoint once it exists.
+    // TODO(client): POST to the real enquiry endpoint once it exists — and
+    // re-check both signals above server-side; neither is enforceable here.
     setSent(true);
     form.reset();
   }

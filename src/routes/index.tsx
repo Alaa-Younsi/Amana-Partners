@@ -5,11 +5,13 @@ import { CtaButton, SiteLayout } from "@/components/SiteLayout";
 import { CountUp, NumberedCard, Section, SectionHeading, TiltCard } from "@/components/Primitives";
 import { WorldMap } from "@/components/WorldMap";
 import { useTranslation } from "@/lib/i18n";
-import marbella from "@/assets/marbella.jpg";
-import madrid from "@/assets/madrid.jpg";
-import barcelona from "@/assets/barcelona-interior.jpg";
+import { routeUrlTags } from "@/lib/site";
+import marbella from "@/assets/marbella.webp";
+import madrid from "@/assets/madrid.webp";
+import barcelona from "@/assets/barcelona-interior.webp";
 
 export const Route = createFileRoute("/")({
+  head: () => routeUrlTags("/"),
   component: Home,
 });
 
@@ -23,7 +25,8 @@ const STATS_CONFIG = [
 ];
 
 function Home() {
-  const { t } = useTranslation();
+  const { t, locale } = useTranslation();
+  const mirrored = locale === "ar";
   return (
     <SiteLayout>
       {/* ------------------------------------------------------------ HERO */}
@@ -33,19 +36,27 @@ function Home() {
           aria-hidden="true"
           className="absolute inset-0 -z-10"
           style={{
-            background:
-              "radial-gradient(120% 90% at 78% 32%, #ffffff 0%, var(--ivory) 46%, #f4efe5 100%)",
+            background: mirrored
+              ? "radial-gradient(120% 90% at 22% 32%, #ffffff 0%, var(--ivory) 46%, #f4efe5 100%)"
+              : "radial-gradient(120% 90% at 78% 32%, #ffffff 0%, var(--ivory) 46%, #f4efe5 100%)",
           }}
         />
         <div
           aria-hidden="true"
-          className="pointer-events-none absolute right-[6%] top-[18%] -z-10 h-[32rem] w-[32rem] rounded-full opacity-[0.13] blur-3xl"
+          className="pointer-events-none absolute top-[18%] -z-10 h-[32rem] w-[32rem] rounded-full opacity-[0.13] blur-3xl end-[6%]"
           style={{ background: "radial-gradient(circle, var(--gold), transparent 68%)" }}
         />
 
-        {/* Dotted world map — decorative. Hidden on narrow screens, where it
-            would sit directly behind the headline and hurt legibility. */}
-        <WorldMap className="pointer-events-none absolute -right-[4%] top-10 -z-10 hidden h-auto max-w-none opacity-90 md:block md:w-[80%] lg:w-[74%]" />
+        {/* Dotted world map — decorative background, large enough that on
+            narrow screens it would sit directly behind the headline and hurt
+            legibility, so it's hidden there in favour of the smaller inline
+            version below the hero copy. Mirrors to the opposite side (and
+            fades from the opposite edge) so it never sits under the text,
+            in either reading direction. */}
+        <WorldMap
+          mirrored={mirrored}
+          className="pointer-events-none absolute -end-[4%] top-10 -z-10 hidden h-auto max-w-none opacity-90 md:block md:w-[80%] lg:w-[74%]"
+        />
 
         <div className="container-x relative pb-20 pt-36 md:pb-24 md:pt-44 lg:pb-28 lg:pt-48">
           <div className="max-w-2xl">
@@ -92,6 +103,33 @@ function Home() {
                 </div>
               ))}
             </div>
+          </div>
+
+          {/* Compact map, mobile only — the large background version above
+              is hidden below md since it would sit directly under the text;
+              this sits in normal flow below the copy instead, so it's never
+              hidden, on either side of the toggle. */}
+          <div
+            aria-hidden="true"
+            className="relative -mx-6 mt-14 h-52 overflow-hidden sm:h-64 md:hidden"
+            style={{
+              maskImage:
+                "linear-gradient(to bottom, transparent, black 18%, black 82%, transparent)",
+              WebkitMaskImage:
+                "linear-gradient(to bottom, transparent, black 18%, black 82%, transparent)",
+            }}
+          >
+            <WorldMap
+              mirrored={mirrored}
+              // The map's own viewBox spans the whole visible globe (Americas
+              // to Asia) so its geometric centre is mostly empty ocean — the
+              // Spain/Europe/GCC cluster sits well right of that centre (and
+              // mirrored, well left of it). Centering on the cluster itself,
+              // not the viewBox midpoint, is what actually frames it.
+              className={`absolute left-1/2 top-1/2 h-auto w-[42rem] max-w-none -translate-y-[36%] ${
+                mirrored ? "-translate-x-[36%]" : "-translate-x-[64%]"
+              }`}
+            />
           </div>
         </div>
       </section>

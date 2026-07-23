@@ -3,24 +3,36 @@ import { createFileRoute } from "@tanstack/react-router";
 import { SiteLayout, PageHero } from "@/components/SiteLayout";
 import { Section, SectionHeading, TiltCard } from "@/components/Primitives";
 import { useTranslation } from "@/lib/i18n";
-import madridImg from "@/assets/madrid.jpg";
+import { breadcrumbJsonLd, routeUrlTags } from "@/lib/site";
+import madridImg from "@/assets/madrid.webp";
 
 export const Route = createFileRoute("/why-spain")({
-  head: () => ({
-    meta: [
-      { title: "Why Spain — Amana Partners" },
-      {
-        name: "description",
-        content:
-          "The macro thesis behind Spanish real estate for GCC capital: stability, yield, lifestyle and residency.",
-      },
-      { property: "og:title", content: "Why Spain — Amana Partners" },
-      {
-        property: "og:description",
-        content: "Why sophisticated GCC investors are allocating to Spanish real estate.",
-      },
-    ],
-  }),
+  head: () => {
+    const { links, meta } = routeUrlTags("/why-spain");
+    return {
+      meta: [
+        { title: "Why Spain — Amana Partners" },
+        {
+          name: "description",
+          content:
+            "The macro thesis behind Spanish real estate for GCC capital: stability, yield, lifestyle and residency.",
+        },
+        { property: "og:title", content: "Why Spain — Amana Partners" },
+        {
+          property: "og:description",
+          content: "Why sophisticated GCC investors are allocating to Spanish real estate.",
+        },
+        ...meta,
+      ],
+      links,
+      scripts: [
+        {
+          type: "application/ld+json",
+          children: JSON.stringify(breadcrumbJsonLd("Why Spain", "/why-spain")),
+        },
+      ],
+    };
+  },
   component: WhySpain,
 });
 

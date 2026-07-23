@@ -14,8 +14,9 @@ import {
   DEFAULT_DESCRIPTION,
   DEFAULT_TITLE,
   OG_IMAGE,
+  OG_IMAGE_HEIGHT,
+  OG_IMAGE_WIDTH,
   SITE_NAME,
-  SITE_URL,
   organizationJsonLd,
 } from "../lib/site";
 import { LanguageProvider, useTranslation } from "../lib/i18n";
@@ -90,10 +91,14 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { property: "og:title", content: DEFAULT_TITLE },
       { property: "og:description", content: DEFAULT_DESCRIPTION },
       { property: "og:type", content: "website" },
-      { property: "og:url", content: SITE_URL },
+      // og:url is deliberately per-route (see routeUrlTags in lib/site.ts),
+      // not set here — every route supplies its own.
       { property: "og:locale", content: "en_GB" },
       { property: "og:image", content: OG_IMAGE },
-      { property: "og:image:alt", content: "Amana Partners" },
+      { property: "og:image:width", content: String(OG_IMAGE_WIDTH) },
+      { property: "og:image:height", content: String(OG_IMAGE_HEIGHT) },
+      { property: "og:image:type", content: "image/jpeg" },
+      { property: "og:image:alt", content: "Amana Partners — Cross-Border Investment Advisory" },
       { name: "twitter:card", content: "summary_large_image" },
       { name: "twitter:title", content: DEFAULT_TITLE },
       { name: "twitter:description", content: DEFAULT_DESCRIPTION },
@@ -102,8 +107,10 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     links: [
       { rel: "stylesheet", href: appCss },
       { rel: "icon", href: "/favicon.svg", type: "image/svg+xml" },
-      { rel: "apple-touch-icon", href: "/logo.jpeg" },
-      { rel: "canonical", href: SITE_URL },
+      { rel: "icon", href: "/favicon-32.png", sizes: "32x32", type: "image/png" },
+      { rel: "apple-touch-icon", href: "/apple-touch-icon.png" },
+      { rel: "manifest", href: "/site.webmanifest" },
+      // canonical is deliberately per-route (see routeUrlTags) — not set here.
       { rel: "preconnect", href: "https://fonts.googleapis.com" },
       { rel: "preconnect", href: "https://fonts.gstatic.com", crossOrigin: "anonymous" },
       {

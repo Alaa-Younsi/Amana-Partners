@@ -3,25 +3,37 @@ import { createFileRoute } from "@tanstack/react-router";
 import { SiteLayout, PageHero } from "@/components/SiteLayout";
 import { Section, SectionHeading, TiltCard } from "@/components/Primitives";
 import { useTranslation } from "@/lib/i18n";
-import interior from "@/assets/barcelona-interior.jpg";
+import { breadcrumbJsonLd, routeUrlTags } from "@/lib/site";
+import interior from "@/assets/barcelona-interior.webp";
 
 export const Route = createFileRoute("/about")({
-  head: () => ({
-    meta: [
-      { title: "About Amana Partners" },
-      {
-        name: "description",
-        content:
-          "Amana Partners is a private cross-border investment advisory firm helping GCC principals access strategic opportunities in Spain.",
-      },
-      { property: "og:title", content: "About Amana Partners" },
-      {
-        property: "og:description",
-        content:
-          "An independent advisory firm — not a brokerage — built for GCC principals investing in Spain.",
-      },
-    ],
-  }),
+  head: () => {
+    const { links, meta } = routeUrlTags("/about");
+    return {
+      meta: [
+        { title: "About Amana Partners" },
+        {
+          name: "description",
+          content:
+            "Amana Partners is a private cross-border investment advisory firm helping GCC principals access strategic opportunities in Spain.",
+        },
+        { property: "og:title", content: "About Amana Partners" },
+        {
+          property: "og:description",
+          content:
+            "An independent advisory firm — not a brokerage — built for GCC principals investing in Spain.",
+        },
+        ...meta,
+      ],
+      links,
+      scripts: [
+        {
+          type: "application/ld+json",
+          children: JSON.stringify(breadcrumbJsonLd("About", "/about")),
+        },
+      ],
+    };
+  },
   component: About,
 });
 
@@ -37,7 +49,7 @@ function About() {
       />
 
       <Section className="py-24 md:py-32">
-        <div className="container-x grid gap-16 md:grid-cols-12">
+        <div className="container-x grid items-start gap-16 md:grid-cols-12">
           <div className="reveal md:col-span-6">
             <p className="eyebrow">{t.about.mission.eyebrow}</p>
             <h2 className="mt-6 font-display text-4xl leading-tight md:text-5xl">
@@ -53,6 +65,7 @@ function About() {
             <TiltCard
               max={7}
               reveal={false}
+              fill={false}
               className="overflow-hidden shadow-[var(--shadow-lift)]"
             >
               <img

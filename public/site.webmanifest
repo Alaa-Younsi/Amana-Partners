@@ -1,0 +1,14 @@
+{
+  "name": "Amana Partners",
+  "short_name": "Amana Partners",
+  "description": "Cross-border investment advisory for GCC principals investing in Spain.",
+  "start_url": "/",
+  "display": "browser",
+  "background_color": "#0d1830",
+  "theme_color": "#0d1830",
+  "icons": [
+    { "src": "/favicon-32.png", "sizes": "32x32", "type": "image/png" },
+    { "src": "/apple-touch-icon.png", "sizes": "180x180", "type": "image/png" },
+    { "src": "/icon-512.png", "sizes": "512x512", "type": "image/png" }
+  ]
+}

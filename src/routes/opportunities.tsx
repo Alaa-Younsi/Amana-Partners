@@ -3,28 +3,40 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { SiteLayout, PageHero } from "@/components/SiteLayout";
 import { Section, TiltCard } from "@/components/Primitives";
 import { useTranslation } from "@/lib/i18n";
-import madrid from "@/assets/madrid.jpg";
-import marbella from "@/assets/marbella.jpg";
-import barcelona from "@/assets/barcelona-interior.jpg";
-import hero from "@/assets/hero-spain.jpg";
+import { breadcrumbJsonLd, routeUrlTags } from "@/lib/site";
+import madrid from "@/assets/madrid.webp";
+import marbella from "@/assets/marbella.webp";
+import barcelona from "@/assets/barcelona-interior.webp";
+import hero from "@/assets/hero-spain.webp";
 
 export const Route = createFileRoute("/opportunities")({
-  head: () => ({
-    meta: [
-      { title: "Strategic Opportunities — Amana Partners" },
-      {
-        name: "description",
-        content:
-          "A representative sample of the cross-border investment opportunities Amana Partners evaluates for GCC principals across Spain.",
-      },
-      { property: "og:title", content: "Strategic Opportunities — Amana Partners" },
-      {
-        property: "og:description",
-        content:
-          "Real estate, hospitality, M&A and market-entry opportunities across Spain — reviewed under NDA with qualified principals.",
-      },
-    ],
-  }),
+  head: () => {
+    const { links, meta } = routeUrlTags("/opportunities");
+    return {
+      meta: [
+        { title: "Strategic Opportunities — Amana Partners" },
+        {
+          name: "description",
+          content:
+            "A representative sample of the cross-border investment opportunities Amana Partners evaluates for GCC principals across Spain.",
+        },
+        { property: "og:title", content: "Strategic Opportunities — Amana Partners" },
+        {
+          property: "og:description",
+          content:
+            "Real estate, hospitality, M&A and market-entry opportunities across Spain — reviewed under NDA with qualified principals.",
+        },
+        ...meta,
+      ],
+      links,
+      scripts: [
+        {
+          type: "application/ld+json",
+          children: JSON.stringify(breadcrumbJsonLd("Opportunities", "/opportunities")),
+        },
+      ],
+    };
+  },
   component: Opportunities,
 });
 

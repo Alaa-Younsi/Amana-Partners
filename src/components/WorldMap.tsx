@@ -6,7 +6,15 @@
  * against simplified continent outlines, then emitted as a *single* <path>
  * of zero-ish-length round-capped segments. One DOM node instead of ~1,300
  * <circle> elements keeps hydration and paint cheap.
+ *
+ * Geometry is precomputed twice at module scope — once normal, once
+ * horizontally mirrored — so the Arabic (RTL) layout can flip the whole
+ * graphic to sit on the opposite side of the hero without ever flipping the
+ * (always-Latin) labels themselves, which are positioned using the already
+ * mirrored coordinates rather than a CSS transform.
  */
+
+import { useId } from "react";
 
 type Ring = ReadonlyArray<readonly [number, number]>;
 
@@ -25,6 +33,9 @@ const VIEW = {
   w: projX(92) - projX(-100),
   h: projY(-42) - projY(82),
 };
+
+/** Reflect a projected x-coordinate across the visible window's centre. */
+const mirrorX = (x: number) => 2 * VIEW.x + VIEW.w - x;
 
 /* ------------------------------------------------------- continent outlines */
 
@@ -159,13 +170,13 @@ function pointInRing(lon: number, lat: number, ring: Ring): boolean {
 
 const isLand = (lon: number, lat: number) => LAND.some((ring) => pointInRing(lon, lat, ring));
 
-function ringToPath(ring: Ring): string {
+function ringToPath(ring: Ring, mirror: boolean): string {
   return (
     ring
-      .map(
-        ([lon, lat], i) =>
-          `${i === 0 ? "M" : "L"}${projX(lon).toFixed(1)},${projY(lat).toFixed(1)}`,
-      )
+      .map(([lon, lat], i) => {
+        const x = projX(lon);
+        return `${i === 0 ? "M" : "L"}${(mirror ? mirrorX(x) : x).toFixed(1)},${projY(lat).toFixed(1)}`;
+      })
       .join(" ") + " Z"
   );
 }
@@ -173,7 +184,7 @@ function ringToPath(ring: Ring): string {
 /** Grid pitch in projection units — 7 ≈ 2.5° of longitude. */
 const STEP = 7;
 
-function buildDotField() {
+function buildDotField(mirror: boolean) {
   const base: string[] = [];
   const accent: string[] = [];
 
@@ -186,7 +197,8 @@ function buildDotField() {
       const lat = 90 - (y / H) * 180;
       if (!isLand(lon, lat)) continue;
 
-      const segment = `M${x},${y}l.01 0`;
+      const px = mirror ? mirrorX(x) : x;
+      const segment = `M${px},${y}l.01 0`;
       // Dots falling inside a focus market are drawn in the accent pass so the
       // highlighted silhouettes read as solid navy against the grey field.
       if (
@@ -204,14 +216,9 @@ function buildDotField() {
   return { base: base.join(""), accent: accent.join("") };
 }
 
-const DOTS = buildDotField();
-const SPAIN_PATH = ringToPath(SPAIN);
-const FRANCE_PATH = ringToPath(FRANCE);
-const ARABIA_PATH = ringToPath(ARABIA);
-
 /* ----------------------------------------------------------------- markers */
 
-type Marker = {
+type MarkerDef = {
   id: string;
   label: string;
   lon: number;
@@ -224,39 +231,78 @@ type Marker = {
   dy: number;
 };
 
-const MARKERS: Marker[] = [
+const MARKER_DEFS: MarkerDef[] = [
   { id: "spain", label: "Spain", lon: -3.7, lat: 40.4, dx: -26, dy: 0 },
   { id: "europe", label: "Europe", lon: 2.5, lat: 47.0, dx: 30, dy: -16 },
   // Offset down-left into the Arabian Sea, clear of the peninsula fill.
   { id: "gcc", label: "GCC", lon: 50.5, lat: 24.5, dx: -30, dy: 40 },
 ];
 
+type Marker = { id: string; label: string; x: number; y: number; dx: number; dy: number };
+
+function buildMarkers(mirror: boolean): Marker[] {
+  return MARKER_DEFS.map((def) => {
+    const x = projX(def.lon);
+    return {
+      id: def.id,
+      label: def.label,
+      x: mirror ? mirrorX(x) : x,
+      y: projY(def.lat),
+      // The leader-line offset flips along with the marker so it keeps
+      // pointing away from the (now mirrored) landmass toward open sea.
+      dx: mirror ? -def.dx : def.dx,
+      dy: def.dy,
+    };
+  });
+}
+
 /** Quadratic arc bowed away from the midpoint, like a flight path. */
-function arcPath(a: Marker, b: Marker, bow = 0.22) {
-  const x1 = projX(a.lon);
-  const y1 = projY(a.lat);
-  const x2 = projX(b.lon);
-  const y2 = projY(b.lat);
-  const mx = (x1 + x2) / 2;
-  const my = (y1 + y2) / 2;
-  const dx = x2 - x1;
-  const dy = y2 - y1;
+function arcPath(a: { x: number; y: number }, b: { x: number; y: number }, bow = 0.22) {
+  const mx = (a.x + b.x) / 2;
+  const my = (a.y + b.y) / 2;
+  const dx = b.x - a.x;
+  const dy = b.y - a.y;
   const dist = Math.hypot(dx, dy);
   // Perpendicular offset, always bowing "up" the map.
   const cx = mx + (dy / dist) * dist * bow;
   const cy = my - (dx / dist) * dist * bow;
-  return `M${x1.toFixed(1)},${y1.toFixed(1)} Q${cx.toFixed(1)},${cy.toFixed(1)} ${x2.toFixed(1)},${y2.toFixed(1)}`;
+  return `M${a.x.toFixed(1)},${a.y.toFixed(1)} Q${cx.toFixed(1)},${cy.toFixed(1)} ${b.x.toFixed(1)},${b.y.toFixed(1)}`;
 }
 
-const [SPAIN_M, EUROPE_M, GCC_M] = MARKERS;
+function buildGeometry(mirror: boolean) {
+  const markers = buildMarkers(mirror);
+  const [spainM, europeM, gccM] = markers;
+  const arcs = [
+    { id: "spain-europe", d: arcPath(spainM, europeM, 0.3), delay: 0.2, dur: 1.4 },
+    { id: "spain-gcc", d: arcPath(spainM, gccM, 0.26), delay: 0.6, dur: 2.2 },
+    { id: "europe-gcc", d: arcPath(europeM, gccM, 0.12), delay: 1.0, dur: 1.9 },
+  ];
 
-const ARCS = [
-  { id: "spain-europe", d: arcPath(SPAIN_M, EUROPE_M, 0.3), delay: 0.2, dur: 1.4 },
-  { id: "spain-gcc", d: arcPath(SPAIN_M, GCC_M, 0.26), delay: 0.6, dur: 2.2 },
-  { id: "europe-gcc", d: arcPath(EUROPE_M, GCC_M, 0.12), delay: 1.0, dur: 1.9 },
-];
+  return {
+    dots: buildDotField(mirror),
+    spainPath: ringToPath(SPAIN, mirror),
+    francePath: ringToPath(FRANCE, mirror),
+    arabiaPath: ringToPath(ARABIA, mirror),
+    markers,
+    arcs,
+  };
+}
 
-export function WorldMap({ className = "" }: { className?: string }) {
+const GEO = { ltr: buildGeometry(false), rtl: buildGeometry(true) };
+
+export function WorldMap({
+  className = "",
+  mirrored = false,
+}: {
+  className?: string;
+  mirrored?: boolean;
+}) {
+  const uid = useId().replace(/[^a-zA-Z0-9]/g, "");
+  const geo = mirrored ? GEO.rtl : GEO.ltr;
+  const fadeId = `${uid}-fade`;
+  const maskId = `${uid}-mask`;
+  const arcGradId = `${uid}-arc`;
+
   return (
     <svg
       viewBox={`${VIEW.x.toFixed(1)} ${VIEW.y.toFixed(1)} ${VIEW.w.toFixed(1)} ${VIEW.h.toFixed(1)}`}
@@ -265,27 +311,33 @@ export function WorldMap({ className = "" }: { className?: string }) {
       focusable="false"
     >
       <defs>
-        {/* Fade the map out toward the left so headline text stays legible */}
-        <linearGradient id="am-map-fade" x1="0" y1="0" x2="1" y2="0">
+        {/* Fade the map out toward the side the headline text sits on. */}
+        <linearGradient
+          id={fadeId}
+          x1={mirrored ? "1" : "0"}
+          y1="0"
+          x2={mirrored ? "0" : "1"}
+          y2="0"
+        >
           <stop offset="0%" stopColor="white" stopOpacity="0" />
           <stop offset="34%" stopColor="white" stopOpacity="0.45" />
           <stop offset="65%" stopColor="white" stopOpacity="1" />
           <stop offset="100%" stopColor="white" stopOpacity="1" />
         </linearGradient>
-        <mask id="am-map-mask">
-          <rect x={VIEW.x} y={VIEW.y} width={VIEW.w} height={VIEW.h} fill="url(#am-map-fade)" />
+        <mask id={maskId}>
+          <rect x={VIEW.x} y={VIEW.y} width={VIEW.w} height={VIEW.h} fill={`url(#${fadeId})`} />
         </mask>
-        <linearGradient id="am-arc" x1="0" y1="0" x2="1" y2="0">
+        <linearGradient id={arcGradId} x1="0" y1="0" x2="1" y2="0">
           <stop offset="0%" stopColor="var(--gold)" stopOpacity="0.15" />
           <stop offset="50%" stopColor="var(--gold)" stopOpacity="0.95" />
           <stop offset="100%" stopColor="var(--gold)" stopOpacity="0.15" />
         </linearGradient>
       </defs>
 
-      <g mask="url(#am-map-mask)">
+      <g mask={`url(#${maskId})`}>
         {/* Base landmass dot field */}
         <path
-          d={DOTS.base}
+          d={geo.dots.base}
           stroke="var(--navy)"
           strokeOpacity="0.24"
           strokeWidth="3"
@@ -293,11 +345,11 @@ export function WorldMap({ className = "" }: { className?: string }) {
           fill="none"
         />
         {/* Focus markets: solid silhouette + denser dots on top */}
-        <path d={SPAIN_PATH} fill="var(--navy)" fillOpacity="0.92" />
-        <path d={FRANCE_PATH} fill="var(--navy)" fillOpacity="0.92" />
-        <path d={ARABIA_PATH} fill="var(--navy)" fillOpacity="0.92" />
+        <path d={geo.spainPath} fill="var(--navy)" fillOpacity="0.92" />
+        <path d={geo.francePath} fill="var(--navy)" fillOpacity="0.92" />
+        <path d={geo.arabiaPath} fill="var(--navy)" fillOpacity="0.92" />
         <path
-          d={DOTS.accent}
+          d={geo.dots.accent}
           stroke="var(--navy-deep)"
           strokeWidth="3.4"
           strokeLinecap="round"
@@ -306,8 +358,8 @@ export function WorldMap({ className = "" }: { className?: string }) {
       </g>
 
       {/* Connection arcs */}
-      <g fill="none" stroke="url(#am-arc)" strokeWidth="1.5">
-        {ARCS.map((arc) => (
+      <g fill="none" stroke={`url(#${arcGradId})`} strokeWidth="1.5">
+        {geo.arcs.map((arc) => (
           <path
             key={arc.id}
             d={arc.d}
@@ -322,7 +374,7 @@ export function WorldMap({ className = "" }: { className?: string }) {
       </g>
 
       {/* Travelling pulse along each arc */}
-      {ARCS.map((arc) => (
+      {geo.arcs.map((arc) => (
         <circle key={`${arc.id}-pulse`} r="2.6" fill="var(--gold-light)">
           <animateMotion
             dur={`${arc.dur * 2.2}s`}
@@ -345,12 +397,11 @@ export function WorldMap({ className = "" }: { className?: string }) {
         </circle>
       ))}
 
-      {/* Market markers + labels */}
-      {MARKERS.map((m, i) => {
-        const x = projX(m.lon);
-        const y = projY(m.lat);
-        const anchorX = x + m.dx;
-        const anchorY = y + m.dy;
+      {/* Market markers + labels — coordinates are already mirrored above, so
+          the glyphs themselves are never flipped and stay readable. */}
+      {geo.markers.map((m, i) => {
+        const anchorX = m.x + m.dx;
+        const anchorY = m.y + m.dy;
         const leftOfDot = m.dx < 0;
         // Stop the leader short of both the dot and the text.
         const t = 5 / Math.hypot(m.dx, m.dy);
@@ -358,20 +409,20 @@ export function WorldMap({ className = "" }: { className?: string }) {
         return (
           <g key={m.id}>
             <circle
-              cx={x}
-              cy={y}
+              cx={m.x}
+              cy={m.y}
               r="4"
               fill="var(--gold)"
               opacity="0.35"
               style={{
-                transformOrigin: `${x}px ${y}px`,
+                transformOrigin: `${m.x}px ${m.y}px`,
                 animation: `pulse-ring 3s ease-out ${1.2 + i * 0.4}s infinite`,
               }}
             />
-            <circle cx={x} cy={y} r="3" fill="var(--gold)" />
+            <circle cx={m.x} cy={m.y} r="3" fill="var(--gold)" />
             <line
-              x1={x + m.dx * t}
-              y1={y + m.dy * t}
+              x1={m.x + m.dx * t}
+              y1={m.y + m.dy * t}
               x2={anchorX}
               y2={anchorY}
               stroke="var(--gold)"
@@ -388,6 +439,7 @@ export function WorldMap({ className = "" }: { className?: string }) {
               fillOpacity="0.75"
               fontFamily="var(--font-sans)"
               fontWeight="500"
+              direction="ltr"
               style={{ textTransform: "uppercase" }}
             >
               {m.label.toUpperCase()}
