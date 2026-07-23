@@ -44,7 +44,9 @@ const en = {
       titleSuffix: " investment?",
       subtitle:
         "Cross-border investment advisory for GCC principals. We identify, evaluate and secure strategic opportunities across Spain through trusted local partnerships.",
-      ctaSpeak: "Speak with Nouar Chaker",
+      tagline:
+        "Bridging GCC Investors with Spain through local expertise, cultural understanding and trusted partnerships.",
+      ctaSpeak: "Speak With Our Managing Partner",
       ctaExpertise: "Our expertise",
       trust: ["GCC", "Spain", "Cross-Border Advisory"],
     },
@@ -375,23 +377,6 @@ const en = {
       intro:
         "Introductory meetings are complimentary and typically held in Madrid, Dubai, or by secure video — in English or Arabic. Every enquiry is reviewed personally by a partner.",
     },
-    offices: {
-      eyebrow: "Offices & Contact",
-      blocks: [
-        {
-          title: "Madrid — Headquarters",
-          lines: ["Paseo de la Castellana", "28046 Madrid, Spain", "+34 910 000 000"],
-        },
-        {
-          title: "Gulf Representation",
-          lines: ["DIFC, Dubai", "By appointment only", "+971 4 000 0000"],
-        },
-        {
-          title: "Correspondence",
-          lines: ["partners@amanapartners.com", "Mon – Fri · 09:00 – 19:00 CET"],
-        },
-      ],
-    },
     form: {
       eyebrow: "Request a Consultation",
       title: "Tell us a little about you.",
@@ -472,7 +457,9 @@ const ar: typeof en = {
       titleSuffix: "؟",
       subtitle:
         "استشارات استثمار عابرة للحدود للمستثمرين الرئيسيين من دول مجلس التعاون الخليجي. نحدد الفرص الاستراتيجية في جميع أنحاء إسبانيا ونقيّمها ونؤمّنها من خلال شراكات محلية موثوقة.",
-      ctaSpeak: "تحدث مع نوار شاكر",
+      tagline:
+        "نربط بين المستثمرين الخليجيين وإسبانيا من خلال الخبرة المحلية والفهم الثقافي والشراكات الموثوقة.",
+      ctaSpeak: "تحدث مع شريكنا الإداري",
       ctaExpertise: "خبراتنا",
       trust: ["الخليج", "إسبانيا", "استشارات عابرة للحدود"],
     },
@@ -802,26 +789,6 @@ const ar: typeof en = {
       title: "ابدأوا الحوار، في سرية تامة.",
       intro:
         "الاجتماعات التمهيدية مجانية وتُعقد عادة في مدريد أو دبي أو عبر مكالمة فيديو آمنة — باللغة الإنجليزية أو العربية. تتم مراجعة كل استفسار شخصياً من قبل أحد الشركاء.",
-    },
-    offices: {
-      eyebrow: "المكاتب والتواصل",
-      blocks: [
-        {
-          title: "مدريد — المقر الرئيسي",
-          lines: ["Paseo de la Castellana", "28046 Madrid, Spain", "+34 910 000 000"],
-        },
-        {
-          title: "التمثيل الخليجي",
-          lines: ["DIFC, Dubai", "بموعد مسبق فقط", "+971 4 000 0000"],
-        },
-        {
-          title: "المراسلات",
-          lines: [
-            "partners@amanapartners.com",
-            "الاثنين – الجمعة · 09:00 – 19:00 بتوقيت وسط أوروبا",
-          ],
-        },
-      ],
     },
     form: {
       eyebrow: "طلب استشارة",

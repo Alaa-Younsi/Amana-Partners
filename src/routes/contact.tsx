@@ -68,17 +68,8 @@ function Contact() {
       />
 
       <Section className="py-24 md:py-32">
-        <div className="container-x grid gap-16 md:grid-cols-12">
-          <div className="reveal md:col-span-5">
-            <p className="eyebrow">{t.contact.offices.eyebrow}</p>
-            <div className="mt-8 space-y-10">
-              {t.contact.offices.blocks.map((b, i) => (
-                <Block key={i} title={b.title} lines={b.lines} />
-              ))}
-            </div>
-          </div>
-
-          <div className="reveal md:col-span-6 md:col-start-7">
+        <div className="container-x">
+          <div className="reveal mx-auto max-w-2xl">
             <form
               className="gold-frame bg-card p-8 shadow-[var(--shadow-soft)] md:p-12"
               onSubmit={onSubmit}
@@ -208,23 +199,6 @@ function Field({
         maxLength={200}
         className="mt-3 w-full border-b border-border bg-transparent py-2 text-sm transition-colors duration-300 focus:border-gold focus:outline-none"
       />
-    </div>
-  );
-}
-
-const HAS_ARABIC = /[؀-ۿ]/;
-
-function Block({ title, lines }: { title: string; lines: string[] }) {
-  return (
-    <div className="group border-s border-border ps-6 transition-colors duration-500 hover:border-gold">
-      <h3 className="font-display text-xl text-navy">{title}</h3>
-      <div className="mt-3 space-y-1 text-sm text-muted-foreground">
-        {lines.map((l, i) => (
-          <p key={i} dir={HAS_ARABIC.test(l) ? undefined : "ltr"}>
-            {l}
-          </p>
-        ))}
-      </div>
     </div>
   );
 }

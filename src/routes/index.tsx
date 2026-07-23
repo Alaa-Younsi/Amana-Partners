@@ -76,8 +76,11 @@ function Home() {
               {t.home.hero.subtitle}
             </p>
 
+            <p className="mt-4 max-w-lg text-sm font-medium uppercase tracking-[0.14em] text-navy/70 md:text-[0.95rem]">
+              {t.home.hero.tagline}
+            </p>
+
             <div className="mt-11 flex flex-wrap items-center gap-4">
-              {/* TODO(client): confirm the advisor name shown on this CTA. */}
               <CtaButton to="/contact">{t.home.hero.ctaSpeak}</CtaButton>
               <Link
                 to="/services"
