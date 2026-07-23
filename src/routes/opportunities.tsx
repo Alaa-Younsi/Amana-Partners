@@ -57,7 +57,7 @@ function Opportunities() {
         <div className="container-x space-y-20 md:space-y-28">
           {t.opportunities.deals.map((d, i) => (
             <article
-              key={d.title}
+              key={i}
               className={`reveal grid items-center gap-10 md:grid-cols-12 ${i % 2 === 1 ? "md:[direction:rtl]" : ""}`}
             >
               <div className="md:col-span-7 md:[direction:ltr]">
@@ -90,8 +90,8 @@ function Opportunities() {
                 <p className="mt-5 text-base leading-relaxed text-foreground/80">{d.body}</p>
                 <dl className="mt-8 grid grid-cols-3 gap-4 border-t border-border pt-6">
                   <dt className="sr-only">{t.opportunities.dealParametersSr}</dt>
-                  {d.meta.map((m) => (
-                    <dd key={m} className="text-xs uppercase tracking-[0.16em] text-navy">
+                  {d.meta.map((m, metaIdx) => (
+                    <dd key={metaIdx} className="text-xs uppercase tracking-[0.16em] text-navy">
                       {m}
                     </dd>
                   ))}

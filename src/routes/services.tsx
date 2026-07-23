@@ -52,7 +52,7 @@ function Services() {
           <div className="grid gap-6 md:grid-cols-2">
             {t.services.items.map((s, idx) => (
               <TiltCard
-                key={s.title}
+                key={idx}
                 max={5}
                 className="gold-frame bg-card p-10 shadow-[var(--shadow-soft)] transition-shadow duration-500 hover:shadow-[var(--shadow-lift)] md:p-14"
               >
@@ -69,9 +69,9 @@ function Services() {
                   {s.body}
                 </p>
                 <ul className="layer-1 mt-8 space-y-3">
-                  {s.bullets.map((i) => (
+                  {s.bullets.map((bullet, bulletIdx) => (
                     <li
-                      key={i}
+                      key={bulletIdx}
                       className="group/item flex items-start gap-3 text-sm text-foreground/80"
                     >
                       <span
@@ -79,7 +79,7 @@ function Services() {
                         className="mt-2 inline-block h-px w-4 shrink-0 transition-[width] duration-500 group-hover/item:w-7"
                         style={{ backgroundColor: "var(--gold)" }}
                       />
-                      {i}
+                      {bullet}
                     </li>
                   ))}
                 </ul>

@@ -90,7 +90,7 @@ function Home() {
             {/* Trust row */}
             <div className="mt-16 flex flex-wrap items-center gap-x-8 gap-y-5">
               {TRUST_ICONS.map((Icon, i) => (
-                <div key={t.home.hero.trust[i]} className="flex items-center gap-3">
+                <div key={i} className="flex items-center gap-3">
                   {i > 0 && (
                     <span aria-hidden="true" className="me-5 hidden h-8 w-px bg-border sm:block" />
                   )}
@@ -138,7 +138,7 @@ function Home() {
       <Section className="border-y border-border bg-card" stagger={70}>
         <div className="container-x grid divide-y divide-border md:grid-cols-4 md:divide-x md:divide-y-0">
           {STATS_CONFIG.map((s, i) => (
-            <div key={t.home.stats[i]} className="reveal px-4 py-11 text-center">
+            <div key={i} className="reveal px-4 py-11 text-center">
               <div className="font-display text-4xl text-navy md:text-5xl">
                 <CountUp value={s.value} prefix={s.prefix} suffix={s.suffix} />
               </div>
@@ -168,8 +168,8 @@ function Home() {
           <div className="reveal md:col-span-6 md:col-start-7">
             <p className="text-lg leading-relaxed text-foreground/85">{t.home.positioning.body}</p>
             <div className="mt-12 grid gap-8 sm:grid-cols-2">
-              {t.home.positioning.facts.map((f) => (
-                <Fact key={f.label} label={f.label} value={f.value} />
+              {t.home.positioning.facts.map((f, i) => (
+                <Fact key={i} label={f.label} value={f.value} />
               ))}
             </div>
           </div>
@@ -183,7 +183,7 @@ function Home() {
           <div className="mt-16 grid gap-6 md:grid-cols-3">
             {t.home.pillars.items.map((p, i) => (
               <NumberedCard
-                key={p.title}
+                key={i}
                 n={String(i + 1).padStart(2, "0")}
                 title={p.title}
                 body={p.body}
@@ -204,7 +204,7 @@ function Home() {
           <div className="mt-16 grid gap-6 md:grid-cols-3">
             {t.home.markets.items.map((m, i) => (
               <TiltCard
-                key={m.city}
+                key={i}
                 className="relative overflow-hidden bg-navy-deep shadow-[var(--shadow-soft)] hover:shadow-[var(--shadow-deep)]"
                 max={6}
               >
@@ -255,7 +255,7 @@ function Home() {
           <div className="mt-16 grid gap-6 md:grid-cols-2 lg:grid-cols-3">
             {t.home.verticals.items.map((v, i) => (
               <NumberedCard
-                key={v.title}
+                key={i}
                 n={String(i + 1).padStart(2, "0")}
                 title={v.title}
                 note={v.note}
@@ -275,7 +275,7 @@ function Home() {
           />
           <ol className="mt-16 grid gap-6 md:grid-cols-2 lg:grid-cols-3">
             {t.home.approach.steps.map((s, i) => (
-              <li key={s.title} className="contents">
+              <li key={i} className="contents">
                 <NumberedCard n={String(i + 1).padStart(2, "0")} title={s.title} body={s.body} />
               </li>
             ))}

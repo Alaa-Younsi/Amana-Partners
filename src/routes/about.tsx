@@ -56,8 +56,8 @@ function About() {
               {t.about.mission.title}
             </h2>
             <div className="mt-8 space-y-6 text-lg leading-relaxed text-foreground/85">
-              {t.about.mission.paragraphs.map((p) => (
-                <p key={p}>{p}</p>
+              {t.about.mission.paragraphs.map((p, i) => (
+                <p key={i}>{p}</p>
               ))}
             </div>
           </div>
@@ -94,9 +94,9 @@ function About() {
         <div className="container-x">
           <SectionHeading eyebrow={t.about.values.eyebrow} title={t.about.values.title} />
           <div className="mt-16 grid gap-6 md:grid-cols-2 lg:grid-cols-4">
-            {t.about.values.items.map((v) => (
+            {t.about.values.items.map((v, i) => (
               <TiltCard
-                key={v.title}
+                key={i}
                 max={6}
                 className="gold-frame bg-card p-10 shadow-[var(--shadow-soft)] transition-shadow duration-500 hover:shadow-[var(--shadow-lift)]"
               >

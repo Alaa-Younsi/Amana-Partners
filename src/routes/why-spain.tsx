@@ -75,7 +75,7 @@ function WhySpain() {
             </h2>
             {t.whySpain.perspective.paragraphs.map((p, i) => (
               <p
-                key={p}
+                key={i}
                 className={`text-lg leading-relaxed text-foreground/85 ${i === 0 ? "mt-6" : "mt-4"}`}
               >
                 {p}
@@ -94,7 +94,7 @@ function WhySpain() {
           <div className="mt-16 grid gap-6 md:grid-cols-2 lg:grid-cols-3">
             {t.whySpain.reasons.map((r, i) => (
               <TiltCard
-                key={r.title}
+                key={i}
                 max={6}
                 className="gold-frame bg-card p-10 shadow-[var(--shadow-soft)] transition-shadow duration-500 hover:shadow-[var(--shadow-lift)]"
               >

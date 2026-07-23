@@ -72,8 +72,8 @@ function Contact() {
           <div className="reveal md:col-span-5">
             <p className="eyebrow">{t.contact.offices.eyebrow}</p>
             <div className="mt-8 space-y-10">
-              {t.contact.offices.blocks.map((b) => (
-                <Block key={b.title} title={b.title} lines={b.lines} />
+              {t.contact.offices.blocks.map((b, i) => (
+                <Block key={i} title={b.title} lines={b.lines} />
               ))}
             </div>
           </div>
@@ -126,8 +126,8 @@ function Contact() {
                   name="interest"
                   className="mt-3 w-full border border-border bg-transparent px-4 py-3 text-sm transition-colors duration-300 focus:border-gold focus:outline-none"
                 >
-                  {t.contact.form.interests.map((i) => (
-                    <option key={i}>{i}</option>
+                  {t.contact.form.interests.map((interest, i) => (
+                    <option key={i}>{interest}</option>
                   ))}
                 </select>
               </div>
@@ -219,8 +219,8 @@ function Block({ title, lines }: { title: string; lines: string[] }) {
     <div className="group border-s border-border ps-6 transition-colors duration-500 hover:border-gold">
       <h3 className="font-display text-xl text-navy">{title}</h3>
       <div className="mt-3 space-y-1 text-sm text-muted-foreground">
-        {lines.map((l) => (
-          <p key={l} dir={HAS_ARABIC.test(l) ? undefined : "ltr"}>
+        {lines.map((l, i) => (
+          <p key={i} dir={HAS_ARABIC.test(l) ? undefined : "ltr"}>
             {l}
           </p>
         ))}
