@@ -94,6 +94,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       // og:url is deliberately per-route (see routeUrlTags in lib/site.ts),
       // not set here — every route supplies its own.
       { property: "og:locale", content: "en_GB" },
+      { property: "og:locale:alternate", content: "ar_AR" },
       { property: "og:image", content: OG_IMAGE },
       { property: "og:image:width", content: String(OG_IMAGE_WIDTH) },
       { property: "og:image:height", content: String(OG_IMAGE_HEIGHT) },
@@ -103,6 +104,10 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { name: "twitter:title", content: DEFAULT_TITLE },
       { name: "twitter:description", content: DEFAULT_DESCRIPTION },
       { name: "twitter:image", content: OG_IMAGE },
+      {
+        name: "twitter:image:alt",
+        content: "Amana Partners — Cross-Border Investment Advisory for GCC capital in Spain",
+      },
     ],
     links: [
       { rel: "stylesheet", href: appCss },
