@@ -56,9 +56,11 @@ export default defineConfig(({ mode, command }) => {
           },
         },
       }),
-      ...(command === "build"
-        ? [nitro({ defaultPreset: process.env.VERCEL ? "vercel" : "cloudflare-module" })]
-        : []),
+      // Vercel is the deployment target, and the contact route's SMTP client
+      // needs Node built-ins (net/tls) that the workerd runtime doesn't
+      // provide — so local builds use the same preset as production rather
+      // than a Cloudflare one that would fail differently.
+      ...(command === "build" ? [nitro({ defaultPreset: "vercel" })] : []),
       viteReact(),
     ],
   };

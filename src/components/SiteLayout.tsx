@@ -6,6 +6,7 @@ import { LogoLockup, LogoMark } from "./Logo";
 import { LanguageToggle } from "./LanguageToggle";
 import { useScrollProgress, useScrolled } from "@/hooks/use-motion";
 import { useTranslation } from "@/lib/i18n";
+import { CONTACT_EMAIL } from "@/lib/site";
 
 const NAV_ROUTES = [
   { to: "/", key: "home" },
@@ -334,12 +335,13 @@ export function SiteFooter() {
               <li key={m}>{m}</li>
             ))}
           </ul>
+          <h2 className="eyebrow mt-10">{t.footer.contactLabel}</h2>
           <a
-            href="mailto:partners@amanapartners.com"
-            className="mt-6 inline-block border-b border-gold/40 pb-1 text-sm text-gold transition-colors hover:border-gold"
+            href={`mailto:${CONTACT_EMAIL}`}
+            className="mt-5 inline-block border-b border-gold/40 pb-1 text-sm text-gold transition-colors hover:border-gold"
             dir="ltr"
           >
-            partners@amanapartners.com
+            {CONTACT_EMAIL}
           </a>
         </div>
       </div>

@@ -94,15 +94,15 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       // og:url is deliberately per-route (see routeUrlTags in lib/site.ts),
       // not set here — every route supplies its own.
       { property: "og:locale", content: "en_GB" },
-      { property: "og:locale:alternate", content: "ar_AR" },
+      { property: "og:locale:alternate", content: "ar_AE" },
       { property: "og:image", content: OG_IMAGE },
       { property: "og:image:width", content: String(OG_IMAGE_WIDTH) },
       { property: "og:image:height", content: String(OG_IMAGE_HEIGHT) },
       { property: "og:image:type", content: "image/jpeg" },
       { property: "og:image:alt", content: "Amana Partners — Cross-Border Investment Advisory" },
       { name: "twitter:card", content: "summary_large_image" },
-      { name: "twitter:title", content: DEFAULT_TITLE },
-      { name: "twitter:description", content: DEFAULT_DESCRIPTION },
+      // twitter:title / twitter:description are deliberately per-route (see
+      // pageHead in lib/site.ts) so each page's card carries its own copy.
       { name: "twitter:image", content: OG_IMAGE },
       {
         name: "twitter:image:alt",

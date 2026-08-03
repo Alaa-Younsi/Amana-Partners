@@ -3,28 +3,19 @@ import { createFileRoute } from "@tanstack/react-router";
 import { SiteLayout, PageHero } from "@/components/SiteLayout";
 import { Section, TiltCard } from "@/components/Primitives";
 import { useTranslation } from "@/lib/i18n";
-import { breadcrumbJsonLd, routeUrlTags } from "@/lib/site";
+import { breadcrumbJsonLd, pageHead } from "@/lib/site";
 
 export const Route = createFileRoute("/services")({
   head: () => {
-    const { links, meta } = routeUrlTags("/services");
     return {
-      meta: [
-        { title: "Our Expertise — Amana Partners" },
-        {
-          name: "description",
-          content:
-            "Six investment verticals: real estate, hospitality, business acquisitions (M&A), strategic partnerships, market entry in Spain and investor representation.",
-        },
-        { property: "og:title", content: "Our Expertise — Amana Partners" },
-        {
-          property: "og:description",
-          content:
-            "Cross-border investment advisory across six verticals for GCC principals investing in Spain.",
-        },
-        ...meta,
-      ],
-      links,
+      ...pageHead({
+        path: "/services",
+        title: "Our Expertise — Amana Partners",
+        description:
+          "Six investment verticals: real estate, hospitality, business acquisitions (M&A), strategic partnerships, market entry in Spain and investor representation.",
+        socialDescription:
+          "Cross-border investment advisory across six verticals for GCC principals investing in Spain.",
+      }),
       scripts: [
         {
           type: "application/ld+json",

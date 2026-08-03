@@ -1,7 +1,11 @@
 {
-  "name": "Amana Partners",
+  "id": "/",
+  "name": "Amana Partners LLC",
   "short_name": "Amana Partners",
   "description": "Cross-border investment advisory for GCC principals investing in Spain.",
+  "lang": "en",
+  "dir": "ltr",
+  "scope": "/",
   "start_url": "/",
   "display": "browser",
   "background_color": "#0d1830",

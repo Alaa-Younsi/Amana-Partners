@@ -3,7 +3,7 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { SiteLayout, PageHero } from "@/components/SiteLayout";
 import { Section, TiltCard } from "@/components/Primitives";
 import { useTranslation } from "@/lib/i18n";
-import { breadcrumbJsonLd, routeUrlTags } from "@/lib/site";
+import { breadcrumbJsonLd, pageHead } from "@/lib/site";
 import madrid from "@/assets/madrid.webp";
 import marbella from "@/assets/marbella.webp";
 import barcelona from "@/assets/barcelona-interior.webp";
@@ -11,24 +11,15 @@ import hero from "@/assets/hero-spain.webp";
 
 export const Route = createFileRoute("/opportunities")({
   head: () => {
-    const { links, meta } = routeUrlTags("/opportunities");
     return {
-      meta: [
-        { title: "Strategic Opportunities — Amana Partners" },
-        {
-          name: "description",
-          content:
-            "A representative sample of the cross-border investment opportunities Amana Partners evaluates for GCC principals across Spain.",
-        },
-        { property: "og:title", content: "Strategic Opportunities — Amana Partners" },
-        {
-          property: "og:description",
-          content:
-            "Real estate, hospitality, M&A and market-entry opportunities across Spain — reviewed under NDA with qualified principals.",
-        },
-        ...meta,
-      ],
-      links,
+      ...pageHead({
+        path: "/opportunities",
+        title: "Strategic Opportunities — Amana Partners",
+        description:
+          "A representative sample of the cross-border investment opportunities Amana Partners evaluates for GCC principals across Spain.",
+        socialDescription:
+          "Real estate, hospitality, M&A and market-entry opportunities across Spain — reviewed under NDA with qualified principals.",
+      }),
       scripts: [
         {
           type: "application/ld+json",

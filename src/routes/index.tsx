@@ -5,13 +5,21 @@ import { CtaButton, SiteLayout } from "@/components/SiteLayout";
 import { CountUp, NumberedCard, Section, SectionHeading, TiltCard } from "@/components/Primitives";
 import { WorldMap } from "@/components/WorldMap";
 import { useTranslation } from "@/lib/i18n";
-import { routeUrlTags } from "@/lib/site";
+import { DEFAULT_DESCRIPTION, DEFAULT_TITLE, pageHead } from "@/lib/site";
 import marbella from "@/assets/marbella.webp";
 import madrid from "@/assets/madrid.webp";
 import barcelona from "@/assets/barcelona-interior.webp";
 
 export const Route = createFileRoute("/")({
-  head: () => routeUrlTags("/"),
+  head: () =>
+    pageHead({
+      path: "/",
+      title: DEFAULT_TITLE,
+      description: DEFAULT_DESCRIPTION,
+      socialTitle: DEFAULT_TITLE,
+      socialDescription:
+        "Independent advisory for GCC principals investing in Spain — real estate, hospitality, M&A, partnerships and market entry.",
+    }),
   component: Home,
 });
 

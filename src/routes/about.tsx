@@ -3,29 +3,21 @@ import { createFileRoute } from "@tanstack/react-router";
 import { SiteLayout, PageHero } from "@/components/SiteLayout";
 import { Section, SectionHeading, TiltCard } from "@/components/Primitives";
 import { useTranslation } from "@/lib/i18n";
-import { breadcrumbJsonLd, routeUrlTags } from "@/lib/site";
+import { breadcrumbJsonLd, pageHead } from "@/lib/site";
 import interior from "@/assets/barcelona-interior.webp";
 
 export const Route = createFileRoute("/about")({
   head: () => {
-    const { links, meta } = routeUrlTags("/about");
     return {
-      meta: [
-        { title: "About Amana Partners" },
-        {
-          name: "description",
-          content:
-            "Amana Partners is a private cross-border investment advisory firm helping GCC principals access strategic opportunities in Spain.",
-        },
-        { property: "og:title", content: "About Amana Partners" },
-        {
-          property: "og:description",
-          content:
-            "An independent advisory firm — not a brokerage — built for GCC principals investing in Spain.",
-        },
-        ...meta,
-      ],
-      links,
+      ...pageHead({
+        path: "/about",
+        title: "About Amana Partners — Independent Cross-Border Advisory",
+        description:
+          "Amana Partners is a private cross-border investment advisory firm helping GCC principals access strategic opportunities in Spain.",
+        socialTitle: "About Amana Partners",
+        socialDescription:
+          "An independent advisory firm — not a brokerage — built for GCC principals investing in Spain.",
+      }),
       scripts: [
         {
           type: "application/ld+json",

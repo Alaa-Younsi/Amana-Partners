@@ -4,28 +4,26 @@ import { useId, useRef, useState } from "react";
 import { SiteLayout, PageHero } from "@/components/SiteLayout";
 import { Section } from "@/components/Primitives";
 import { useTranslation } from "@/lib/i18n";
-import { breadcrumbJsonLd, routeUrlTags } from "@/lib/site";
+import { breadcrumbJsonLd, contactPageJsonLd, CONTACT_EMAIL, pageHead } from "@/lib/site";
 
 export const Route = createFileRoute("/contact")({
   head: () => {
-    const { links, meta } = routeUrlTags("/contact");
     return {
-      meta: [
-        { title: "Private Consultation — Amana Partners" },
-        {
-          name: "description",
-          content:
-            "Request a private, confidential consultation with Amana Partners in Madrid, Dubai, or by secure video.",
-        },
-        { property: "og:title", content: "Private Consultation — Amana Partners" },
-        { property: "og:description", content: "Begin the conversation in confidence." },
-        ...meta,
-      ],
-      links,
+      ...pageHead({
+        path: "/contact",
+        title: "Private Consultation — Amana Partners",
+        description:
+          "Request a private, confidential consultation with Amana Partners in Madrid, Dubai, or by secure video.",
+        socialDescription: "Begin the conversation in confidence.",
+      }),
       scripts: [
         {
           type: "application/ld+json",
           children: JSON.stringify(breadcrumbJsonLd("Contact", "/contact")),
+        },
+        {
+          type: "application/ld+json",
+          children: JSON.stringify(contactPageJsonLd()),
         },
       ],
     };
@@ -33,30 +31,40 @@ export const Route = createFileRoute("/contact")({
   component: Contact,
 });
 
+type Status = "idle" | "sending" | "sent" | "error";
+
 function Contact() {
   const { t } = useTranslation();
-  const [sent, setSent] = useState(false);
+  const [status, setStatus] = useState<Status>("idle");
   const interestId = useId();
   const messageId = useId();
   const honeypotId = useId();
   // Bots that skip the honeypot still tend to fill and submit a form in well
-  // under a second; a real visitor can't. Client-side only — a real signal,
-  // but not enforcement, which has to happen server-side once a submission
-  // endpoint exists (see TODO below).
+  // under a second; a real visitor can't. Sent to the server as `elapsedMs`,
+  // where it is re-checked — neither this nor the honeypot is enforceable here.
   const mountedAt = useRef(Date.now());
 
-  function onSubmit(event: React.FormEvent<HTMLFormElement>) {
+  async function onSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
+    if (status === "sending") return;
+
     const form = event.currentTarget;
-    const honeypotFilled = (form.elements.namedItem("company_website") as HTMLInputElement)?.value;
-    const submittedTooFast = Date.now() - mountedAt.current < 1500;
-    if (honeypotFilled || submittedTooFast) {
-      return;
+    const values = Object.fromEntries(new FormData(form).entries());
+    setStatus("sending");
+
+    try {
+      const response = await fetch("/api/contact", {
+        method: "POST",
+        headers: { "content-type": "application/json" },
+        body: JSON.stringify({ ...values, elapsedMs: Date.now() - mountedAt.current }),
+      });
+      if (!response.ok) throw new Error(`Enquiry failed: ${response.status}`);
+      setStatus("sent");
+      form.reset();
+      mountedAt.current = Date.now();
+    } catch {
+      setStatus("error");
     }
-    // TODO(client): POST to the real enquiry endpoint once it exists — and
-    // re-check both signals above server-side; neither is enforceable here.
-    setSent(true);
-    form.reset();
   }
 
   return (
@@ -154,16 +162,35 @@ function Contact() {
 
               <button
                 type="submit"
-                className="group relative mt-10 inline-flex w-full items-center justify-center overflow-hidden px-8 py-4 text-[0.72rem] uppercase tracking-[0.22em] transition-all duration-500 hover:-translate-y-0.5 hover:shadow-[0_18px_44px_-18px_rgba(27,43,77,0.8)]"
+                disabled={status === "sending"}
+                className="group relative mt-10 inline-flex w-full items-center justify-center overflow-hidden px-8 py-4 text-[0.72rem] uppercase tracking-[0.22em] transition-all duration-500 hover:-translate-y-0.5 hover:shadow-[0_18px_44px_-18px_rgba(27,43,77,0.8)] disabled:cursor-not-allowed disabled:opacity-60 disabled:hover:translate-y-0 disabled:hover:shadow-none"
                 style={{ backgroundColor: "var(--navy)", color: "var(--ivory)" }}
               >
-                <span className="relative z-10">{t.contact.form.submit}</span>
+                <span className="relative z-10">
+                  {status === "sending" ? t.contact.form.sending : t.contact.form.submit}
+                </span>
               </button>
 
-              <p aria-live="polite" className="mt-5 text-xs text-muted-foreground">
-                {sent ? t.contact.form.confirmSent : t.contact.form.confirmDefault}
+              <p
+                aria-live="polite"
+                className={`mt-5 text-xs ${status === "error" ? "text-destructive" : "text-muted-foreground"}`}
+              >
+                {status === "sent" && t.contact.form.confirmSent}
+                {status === "error" && t.contact.form.errorMessage}
+                {(status === "idle" || status === "sending") && t.contact.form.confirmDefault}
               </p>
             </form>
+
+            <p className="mt-8 text-center text-xs text-muted-foreground">
+              {t.contact.form.orEmail}{" "}
+              <a
+                href={`mailto:${CONTACT_EMAIL}`}
+                className="border-b border-gold/50 pb-0.5 text-navy transition-colors hover:border-gold"
+                dir="ltr"
+              >
+                {CONTACT_EMAIL}
+              </a>
+            </p>
           </div>
         </div>
       </Section>

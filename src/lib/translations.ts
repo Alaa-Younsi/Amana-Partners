@@ -32,6 +32,7 @@ const en = {
     navigate: "Navigate",
     marketsServed: "Markets Served",
     markets: ["GCC", "Spain", "Europe"],
+    contactLabel: "Contact",
     rightsReserved: "All rights reserved.",
     tagline: "GCC · Spain · Europe",
   },
@@ -400,10 +401,14 @@ const en = {
       messagePlaceholder: "Anything you'd like us to know in advance.",
       honeypotLabel: "Company website",
       submit: "Request Consultation",
+      sending: "Sending…",
       confirmSent:
         "Thank you — your enquiry has been received. A partner will be in touch within one business day.",
       confirmDefault:
         "Your enquiry is confidential and reviewed personally by a partner within one business day.",
+      errorMessage:
+        "Your enquiry could not be sent. Please try again, or email us directly at contact@amanapartnersllc.com.",
+      orEmail: "Prefer email? Write to us at",
     },
   },
   notFound: {
@@ -445,6 +450,7 @@ const ar: typeof en = {
     navigate: "التصفح",
     marketsServed: "الأسواق التي نخدمها",
     markets: ["دول مجلس التعاون الخليجي", "إسبانيا", "أوروبا"],
+    contactLabel: "للتواصل",
     rightsReserved: "جميع الحقوق محفوظة.",
     tagline: "الخليج · إسبانيا · أوروبا",
   },
@@ -813,8 +819,12 @@ const ar: typeof en = {
       messagePlaceholder: "أي شيء تودون إخبارنا به مسبقاً.",
       honeypotLabel: "الموقع الإلكتروني للشركة",
       submit: "طلب استشارة",
+      sending: "جارٍ الإرسال…",
       confirmSent: "شكراً لكم — تم استلام استفساركم. سيتواصل معكم أحد الشركاء خلال يوم عمل واحد.",
       confirmDefault: "استفساركم سري ويُراجَع شخصياً من قبل أحد الشركاء خلال يوم عمل واحد.",
+      errorMessage:
+        "تعذّر إرسال استفساركم. يرجى المحاولة مرة أخرى أو مراسلتنا مباشرة على contact@amanapartnersllc.com.",
+      orEmail: "تفضّلون البريد الإلكتروني؟ راسلونا على",
     },
   },
   notFound: {
