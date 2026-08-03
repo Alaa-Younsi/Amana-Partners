@@ -402,8 +402,11 @@ const en = {
       honeypotLabel: "Company website",
       submit: "Request Consultation",
       sending: "Sending…",
-      confirmSent:
-        "Thank you — your enquiry has been received. A partner will be in touch within one business day.",
+      successEyebrow: "Request received",
+      successTitle: "Your consultation request has been sent.",
+      successBody:
+        "Thank you. A partner will review your enquiry personally and respond within one business day, to the email address you provided.",
+      successAgain: "Send another enquiry",
       confirmDefault:
         "Your enquiry is confidential and reviewed personally by a partner within one business day.",
       errorMessage:
@@ -820,7 +823,11 @@ const ar: typeof en = {
       honeypotLabel: "الموقع الإلكتروني للشركة",
       submit: "طلب استشارة",
       sending: "جارٍ الإرسال…",
-      confirmSent: "شكراً لكم — تم استلام استفساركم. سيتواصل معكم أحد الشركاء خلال يوم عمل واحد.",
+      successEyebrow: "تم استلام الطلب",
+      successTitle: "تم إرسال طلب الاستشارة.",
+      successBody:
+        "شكراً لكم. سيراجع أحد الشركاء استفساركم شخصياً ويرد عليكم خلال يوم عمل واحد على البريد الإلكتروني الذي زوّدتمونا به.",
+      successAgain: "إرسال استفسار آخر",
       confirmDefault: "استفساركم سري ويُراجَع شخصياً من قبل أحد الشركاء خلال يوم عمل واحد.",
       errorMessage:
         "تعذّر إرسال استفساركم. يرجى المحاولة مرة أخرى أو مراسلتنا مباشرة على contact@amanapartnersllc.com.",

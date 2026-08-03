@@ -2,6 +2,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import type {} from "@tanstack/react-start";
 import { z } from "zod";
 
+import { SITE_URL } from "@/lib/site";
 import { MailerNotConfiguredError, sendEnquiry } from "@/server/mailer";
 import { clientKey, rateLimit } from "@/server/rate-limit";
 
@@ -16,6 +17,36 @@ const RATE_WINDOW_MS = 15 * 60 * 1000;
  * all it is claimed to do.
  */
 const MIN_FILL_MS = 1500;
+
+/** Every field is length-capped below, so a body past this is abuse, not an enquiry. */
+const MAX_BODY_BYTES = 16 * 1024;
+
+/**
+ * Same-origin guard. Browsers attach `Origin` to every cross-site POST, so
+ * refusing a mismatch stops someone else's page from pointing a form at this
+ * endpoint and using the mailbox as a relay. A *missing* Origin is allowed —
+ * non-browser clients omit it — and those still face the honeypot, the timing
+ * check and the rate limit.
+ */
+function isSameOrigin(request: Request): boolean {
+  const origin = request.headers.get("origin");
+  if (!origin) return true;
+
+  let originHost: string;
+  try {
+    originHost = new URL(origin).host;
+  } catch {
+    return false;
+  }
+
+  // The canonical host is accepted outright so a proxy that rewrites `host`
+  // can't 403 a genuine enquiry; preview deployments match on the headers.
+  return [
+    new URL(SITE_URL).host,
+    request.headers.get("x-forwarded-host"),
+    request.headers.get("host"),
+  ].includes(originHost);
+}
 
 const enquirySchema = z.object({
   name: z.string().trim().min(1).max(200),
@@ -44,6 +75,14 @@ export const Route = createFileRoute("/api/contact")({
   server: {
     handlers: {
       POST: async ({ request }) => {
+        if (!isSameOrigin(request)) {
+          return json({ ok: false, error: "forbidden" }, 403);
+        }
+
+        if (Number(request.headers.get("content-length") ?? 0) > MAX_BODY_BYTES) {
+          return json({ ok: false, error: "payload_too_large" }, 413);
+        }
+
         const { allowed, retryAfter } = rateLimit(
           `contact:${clientKey(request)}`,
           RATE_LIMIT,
@@ -55,9 +94,14 @@ export const Route = createFileRoute("/api/contact")({
           });
         }
 
+        // Read as text first: `content-length` is a claim, this is the fact.
         let payload: unknown;
         try {
-          payload = await request.json();
+          const raw = await request.text();
+          if (raw.length > MAX_BODY_BYTES) {
+            return json({ ok: false, error: "payload_too_large" }, 413);
+          }
+          payload = JSON.parse(raw);
         } catch {
           return json({ ok: false, error: "invalid_json" }, 400);
         }

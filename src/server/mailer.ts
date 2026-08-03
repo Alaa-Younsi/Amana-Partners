@@ -58,6 +58,13 @@ function getTransporter(): Transporter {
   return transporter;
 }
 
+/**
+ * Defence in depth for values that end up in a mail header. Nodemailer already
+ * folds line breaks out of header values, but a crafted `name` shouldn't have
+ * to depend on that staying true across upgrades.
+ */
+const headerSafe = (value: string) => value.replace(/[\r\n\t]+/g, " ").trim();
+
 const escapeHtml = (value: string) =>
   value.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
 
@@ -116,8 +123,10 @@ export async function sendEnquiry(enquiry: Enquiry): Promise<void> {
   await getTransporter().sendMail({
     from: { name: `${SITE_NAME} Website`, address: from },
     to,
-    replyTo: { name: enquiry.name, address: enquiry.email },
-    subject: `New enquiry — ${enquiry.name}${enquiry.interest ? ` · ${enquiry.interest}` : ""}`,
+    replyTo: { name: headerSafe(enquiry.name), address: enquiry.email },
+    subject: headerSafe(
+      `New enquiry — ${enquiry.name}${enquiry.interest ? ` · ${enquiry.interest}` : ""}`,
+    ),
     text: plain,
     html,
   });
