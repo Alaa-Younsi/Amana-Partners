@@ -5,7 +5,7 @@ import { Section, TiltCard } from "@/components/Primitives";
 import { useTranslation } from "@/lib/i18n";
 import { breadcrumbJsonLd, pageHead } from "@/lib/site";
 import madrid from "@/assets/madrid.webp";
-import marbella from "@/assets/marbella.webp";
+import costaBlanca from "@/assets/costa-blanca.webp";
 import barcelona from "@/assets/barcelona-interior.webp";
 import hero from "@/assets/hero-spain.webp";
 
@@ -31,7 +31,7 @@ export const Route = createFileRoute("/opportunities")({
   component: Opportunities,
 });
 
-const DEAL_IMAGES = [hero, madrid, barcelona, marbella, madrid, barcelona];
+const DEAL_IMAGES = [hero, madrid, barcelona, costaBlanca, madrid, barcelona];
 
 function Opportunities() {
   const { t } = useTranslation();

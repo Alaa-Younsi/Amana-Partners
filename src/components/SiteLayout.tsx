@@ -6,7 +6,7 @@ import { LogoLockup, LogoMark } from "./Logo";
 import { LanguageToggle } from "./LanguageToggle";
 import { useScrollProgress, useScrolled } from "@/hooks/use-motion";
 import { useTranslation } from "@/lib/i18n";
-import { CONTACT_EMAIL } from "@/lib/site";
+import { CONTACT_EMAIL, LINKEDIN_URL } from "@/lib/site";
 
 const NAV_ROUTES = [
   { to: "/", key: "home" },
@@ -16,27 +16,12 @@ const NAV_ROUTES = [
   { to: "/about", key: "about" },
 ] as const;
 
-/** Replace with the client's real profiles when supplied. */
+/** Only profiles the client has supplied. Add the rest as their links arrive. */
 const SOCIALS = [
   {
     label: "LinkedIn",
-    href: "#",
+    href: LINKEDIN_URL,
     d: "M4.98 3.5a2.5 2.5 0 1 1 0 5 2.5 2.5 0 0 1 0-5ZM3 9h4v12H3zM10 9h3.8v1.7h.05c.53-.95 1.83-1.95 3.77-1.95 4.03 0 4.78 2.5 4.78 5.76V21h-4v-5.6c0-1.34-.03-3.07-1.9-3.07-1.9 0-2.2 1.46-2.2 2.97V21h-4z",
-  },
-  {
-    label: "Instagram",
-    href: "#",
-    d: "M12 2.2c3.2 0 3.6 0 4.9.07 1.2.06 1.8.25 2.2.42.6.22 1 .48 1.4.9.4.4.7.8.9 1.4.2.4.4 1 .4 2.2.1 1.3.1 1.7.1 4.9s0 3.6-.1 4.9c0 1.2-.2 1.8-.4 2.2-.2.6-.5 1-.9 1.4-.4.4-.8.7-1.4.9-.4.2-1 .4-2.2.4-1.3.1-1.7.1-4.9.1s-3.6 0-4.9-.1c-1.2 0-1.8-.2-2.2-.4-.6-.2-1-.5-1.4-.9-.4-.4-.7-.8-.9-1.4-.2-.4-.4-1-.4-2.2C2.2 15.6 2.2 15.2 2.2 12s0-3.6.1-4.9c0-1.2.2-1.8.4-2.2.2-.6.5-1 .9-1.4.4-.4.8-.7 1.4-.9.4-.2 1-.4 2.2-.4C8.4 2.2 8.8 2.2 12 2.2Zm0 3.4A6.4 6.4 0 1 0 18.4 12 6.4 6.4 0 0 0 12 5.6Zm0 10.6A4.2 4.2 0 1 1 16.2 12 4.2 4.2 0 0 1 12 16.2Zm6.6-10.9a1.5 1.5 0 1 1-1.5-1.5 1.5 1.5 0 0 1 1.5 1.5Z",
-  },
-  {
-    label: "YouTube",
-    href: "#",
-    d: "M23 12s0-3.4-.4-5a2.6 2.6 0 0 0-1.8-1.8C19.1 4.8 12 4.8 12 4.8s-7.1 0-8.8.4A2.6 2.6 0 0 0 1.4 7C1 8.6 1 12 1 12s0 3.4.4 5a2.6 2.6 0 0 0 1.8 1.8c1.7.4 8.8.4 8.8.4s7.1 0 8.8-.4a2.6 2.6 0 0 0 1.8-1.8c.4-1.6.4-5 .4-5ZM9.7 15.4V8.6l6 3.4Z",
-  },
-  {
-    label: "TikTok",
-    href: "#",
-    d: "M16.6 5.8a4.8 4.8 0 0 1-1.1-3.1h-3.2v12.9a2.7 2.7 0 1 1-2-2.6V9.7a5.9 5.9 0 1 0 5.2 5.9V9.3a7.9 7.9 0 0 0 4.5 1.4V7.5a4.7 4.7 0 0 1-3.4-1.7Z",
   },
 ];
 

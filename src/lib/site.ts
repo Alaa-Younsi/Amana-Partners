@@ -15,6 +15,9 @@ export const LEGAL_NAME = "Amana Partners LLC";
 /** Public mailbox — footer, JSON-LD, and the destination for form enquiries. */
 export const CONTACT_EMAIL = "contact@amanapartnersllc.com";
 
+/** Managing Partner's LinkedIn — the only social profile published so far. */
+export const LINKEDIN_URL = "https://www.linkedin.com/in/chaker-nouar-83317559";
+
 export const DEFAULT_TITLE =
   "Amana Partners — Cross-Border Investment Advisory for GCC Investors in Spain";
 
@@ -98,6 +101,7 @@ export function organizationJsonLd() {
         image: OG_IMAGE,
         description: DEFAULT_DESCRIPTION,
         email: CONTACT_EMAIL,
+        sameAs: [LINKEDIN_URL],
         slogan: "Strategic Advisory · Cross-Border Investment",
         knowsLanguage: ["en", "es", "ar"],
         priceRange: "€€€€",

@@ -6,7 +6,7 @@ import { CountUp, NumberedCard, Section, SectionHeading, TiltCard } from "@/comp
 import { WorldMap } from "@/components/WorldMap";
 import { useTranslation } from "@/lib/i18n";
 import { DEFAULT_DESCRIPTION, DEFAULT_TITLE, pageHead } from "@/lib/site";
-import marbella from "@/assets/marbella.webp";
+import costaBlanca from "@/assets/costa-blanca.webp";
 import madrid from "@/assets/madrid.webp";
 import barcelona from "@/assets/barcelona-interior.webp";
 
@@ -23,7 +23,7 @@ export const Route = createFileRoute("/")({
   component: Home,
 });
 
-const MARKET_IMAGES = [marbella, madrid, barcelona];
+const MARKET_IMAGES = [costaBlanca, madrid, barcelona];
 const TRUST_ICONS = [Globe2, MapPin, Scale];
 const STATS_CONFIG = [
   { value: 420, prefix: "€ ", suffix: "M+" },

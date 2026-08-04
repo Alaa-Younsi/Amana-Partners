@@ -53,7 +53,7 @@ const en = {
     },
     stats: [
       "Advised transaction volume",
-      "Years operating in Spain",
+      "Years of operations",
       "Countries served",
       "Private client mandate",
     ],
@@ -66,7 +66,7 @@ const en = {
         { label: "Focus", value: "Cross-border advisory" },
         { label: "Coverage", value: "Spain nationwide" },
         { label: "Clientele", value: "GCC families & offices" },
-        { label: "Ticket size", value: "€3M – €50M+" },
+        { label: "Ticket size", value: "€500K – €50M" },
       ],
     },
     pillars: {
@@ -93,7 +93,7 @@ const en = {
       intro:
         "Coverage is nationwide, but depth compounds. These are the markets where our local network is deepest and most of our off-market flow originates.",
       items: [
-        { city: "Marbella", note: "Coastal & branded residences" },
+        { city: "Costa Blanca", note: "Coastal & branded residences" },
         { city: "Madrid", note: "Prime core & commercial" },
         { city: "Barcelona", note: "Hospitality & mixed use" },
       ],
@@ -323,7 +323,7 @@ const en = {
     deals: [
       {
         tag: "Real Estate",
-        city: "Marbella · Golden Mile",
+        city: "Costa Blanca",
         title: "Frontline residential repositioning",
         meta: ["€ 18 – 26M", "Value-add", "Off-market"],
         body: "Two adjoining frontline assets with combined redevelopment potential and unobstructed sea views. Sourced directly with the ownership.",
@@ -474,7 +474,7 @@ const ar: typeof en = {
     },
     stats: [
       "حجم الصفقات الاستشارية",
-      "سنوات العمل في إسبانيا",
+      "سنوات العمل",
       "الدول التي نخدمها",
       "تفويضات عملاء خاصين حصراً",
     ],
@@ -487,7 +487,7 @@ const ar: typeof en = {
         { label: "التركيز", value: "استشارات عابرة للحدود" },
         { label: "التغطية", value: "إسبانيا بالكامل" },
         { label: "العملاء", value: "عائلات ومكاتب خليجية" },
-        { label: "حجم الاستثمار", value: "3 – 50+ مليون يورو" },
+        { label: "حجم الاستثمار", value: "500 ألف – 50 مليون يورو" },
       ],
     },
     pillars: {
@@ -514,7 +514,7 @@ const ar: typeof en = {
       intro:
         "تغطيتنا تشمل إسبانيا بالكامل، إلا أن العمق يتراكم مع الوقت. هذه هي الأسواق التي تتمتع فيها شبكتنا المحلية بأكبر عمق، والتي تنشأ منها معظم فرصنا خارج السوق المفتوحة.",
       items: [
-        { city: "مربيا", note: "عقارات ساحلية ومساكن بعلامات تجارية" },
+        { city: "كوستا بلانكا", note: "عقارات ساحلية ومساكن بعلامات تجارية" },
         { city: "مدريد", note: "مواقع مركزية متميزة وتجارية" },
         { city: "برشلونة", note: "ضيافة واستخدام مختلط" },
       ],
@@ -744,7 +744,7 @@ const ar: typeof en = {
     deals: [
       {
         tag: "عقارات",
-        city: "مربيا · الميل الذهبي",
+        city: "كوستا بلانكا",
         title: "إعادة تموضع سكني على الواجهة البحرية",
         meta: ["18 – 26 مليون يورو", "قيمة مضافة", "خارج السوق"],
         body: "أصلان متجاوران على الواجهة البحرية بإمكانية إعادة تطوير مشتركة وإطلالة بحرية غير محجوبة. تم الحصول عليهما مباشرة من الملاك.",

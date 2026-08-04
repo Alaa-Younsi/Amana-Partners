@@ -1,7 +1,7 @@
 /**
  * Generates the social share (Open Graph) image at public/og-image.jpg.
  *
- * Composition: the Marbella waterfront hero photo (1200×630, the 1.91:1 ratio
+ * Composition: the coastal waterfront hero photo (1200×630, the 1.91:1 ratio
  * every platform crops to) with a navy scrim in the lower third carrying the
  * Amana wordmark, a gold rule and the positioning line — a photographic,
  * link-preview-first card in the spirit of a premium editorial cover.
