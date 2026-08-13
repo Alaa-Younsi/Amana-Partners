@@ -20,6 +20,8 @@ import {
   organizationJsonLd,
 } from "../lib/site";
 import { LanguageProvider, useTranslation } from "../lib/i18n";
+// PHONE PREVIEW — temporary recording rig, delete with the folder it points at
+import { PhonePreview } from "@/devtools/phone-preview/PhonePreview";
 
 function NotFoundComponent() {
   const { t } = useTranslation();
@@ -158,10 +160,14 @@ function RootShell({ children }: { children: ReactNode }) {
 function RootComponent() {
   const { queryClient } = Route.useRouteContext();
   return (
-    <QueryClientProvider client={queryClient}>
-      <LanguageProvider>
-        <Outlet />
-      </LanguageProvider>
-    </QueryClientProvider>
+    // PHONE PREVIEW — temporary recording rig. Delete this wrapper, its
+    // import, and src/devtools/phone-preview/ to remove.
+    <PhonePreview>
+      <QueryClientProvider client={queryClient}>
+        <LanguageProvider>
+          <Outlet />
+        </LanguageProvider>
+      </QueryClientProvider>
+    </PhonePreview>
   );
 }

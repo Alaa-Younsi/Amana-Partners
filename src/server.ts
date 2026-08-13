@@ -53,11 +53,28 @@ function isH3SwallowedErrorBody(body: string): boolean {
  * properties. Everything else is locked to self, and object/frame/base are
  * shut off entirely.
  */
+/*
+  PHONE PREVIEW — temporary recording rig (src/devtools/phone-preview).
+
+  The rig puts the site inside a same-origin <iframe>, which `frame-ancestors
+  'none'` + `X-Frame-Options: DENY` forbid even from ourselves — without this
+  the frame loads as an opaque blocked page and the phone shows nothing.
+
+  Relaxed to same-origin in DEV ONLY. `import.meta.env.DEV` is statically
+  replaced with `false` when Vite builds for production, so the deployed bundle
+  cannot contain the relaxed values regardless of whether anyone remembers to
+  delete this. Record with `bun run dev`.
+
+  To remove: delete this const and inline the `: "…"` branch of both
+  expressions below.
+*/
+const PHONE_PREVIEW_DEV = import.meta.env.DEV;
+
 const CSP = [
   "default-src 'self'",
   "base-uri 'self'",
   "form-action 'self'",
-  "frame-ancestors 'none'",
+  PHONE_PREVIEW_DEV ? "frame-ancestors 'self'" : "frame-ancestors 'none'",
   "object-src 'none'",
   "script-src 'self' 'unsafe-inline'",
   "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
@@ -72,7 +89,8 @@ const SECURITY_HEADERS: Record<string, string> = {
   "content-security-policy": CSP,
   "x-content-type-options": "nosniff",
   "referrer-policy": "strict-origin-when-cross-origin",
-  "x-frame-options": "DENY",
+  // PHONE PREVIEW — see PHONE_PREVIEW_DEV above; production always gets DENY.
+  "x-frame-options": PHONE_PREVIEW_DEV ? "SAMEORIGIN" : "DENY",
   "permissions-policy":
     "camera=(), microphone=(), geolocation=(), payment=(), usb=(), interest-cohort=()",
   "cross-origin-opener-policy": "same-origin",

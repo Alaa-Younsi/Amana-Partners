@@ -7,6 +7,8 @@ import { LanguageToggle } from "./LanguageToggle";
 import { useScrollProgress, useScrolled } from "@/hooks/use-motion";
 import { useTranslation } from "@/lib/i18n";
 import { CONTACT_EMAIL, LINKEDIN_URL } from "@/lib/site";
+// PHONE PREVIEW — temporary recording rig, delete with the folder it points at
+import { PhonePreviewButton } from "@/devtools/phone-preview/PhonePreviewButton";
 
 const NAV_ROUTES = [
   { to: "/", key: "home" },
@@ -99,6 +101,9 @@ export function SiteHeader() {
           </nav>
 
           <div className="hidden items-center gap-4 lg:flex">
+            {/* PHONE PREVIEW — temporary recording rig. Delete this line, its
+                import, and src/devtools/phone-preview/ to remove. */}
+            <PhonePreviewButton light={lightHeader} />
             <LanguageToggle light={lightHeader} />
             <CtaButton to="/contact" variant={lightHeader ? "ghost" : "outline"}>
               {t.nav.consultation}
