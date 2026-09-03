@@ -1,7 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 
 import { SiteLayout, PageHero } from "@/components/SiteLayout";
-import { Section, SectionHeading, TiltCard } from "@/components/Primitives";
+import { Photo, Section, SectionHeading, TiltCard } from "@/components/Primitives";
 import { useTranslation } from "@/lib/i18n";
 import { breadcrumbJsonLd, pageHead } from "@/lib/site";
 import madridImg from "@/assets/madrid.webp";
@@ -48,14 +48,12 @@ function WhySpain() {
               reveal={false}
               className="overflow-hidden shadow-[var(--shadow-lift)]"
             >
-              <img
+              <Photo
                 src={madridImg}
-                alt="Madrid at twilight"
-                loading="lazy"
-                decoding="async"
+                base="madrid"
+                alt={t.common.imageAlt.madridTwilight}
+                sizes="(min-width: 768px) 460px, calc(100vw - 3rem)"
                 className="w-full object-cover"
-                width={1600}
-                height={1000}
               />
             </TiltCard>
           </div>

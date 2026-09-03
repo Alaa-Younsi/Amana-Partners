@@ -3,7 +3,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { SiteLayout, PageHero } from "@/components/SiteLayout";
 import { Section, TiltCard } from "@/components/Primitives";
 import { useTranslation } from "@/lib/i18n";
-import { breadcrumbJsonLd, pageHead } from "@/lib/site";
+import { breadcrumbJsonLd, pageHead, servicesJsonLd } from "@/lib/site";
 
 export const Route = createFileRoute("/services")({
   head: () => {
@@ -20,6 +20,10 @@ export const Route = createFileRoute("/services")({
         {
           type: "application/ld+json",
           children: JSON.stringify(breadcrumbJsonLd("Services", "/services")),
+        },
+        {
+          type: "application/ld+json",
+          children: JSON.stringify(servicesJsonLd()),
         },
       ],
     };

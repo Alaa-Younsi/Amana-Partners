@@ -2,7 +2,14 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { ArrowUpRight, Globe2, MapPin, Scale } from "lucide-react";
 
 import { CtaButton, SiteLayout } from "@/components/SiteLayout";
-import { CountUp, NumberedCard, Section, SectionHeading, TiltCard } from "@/components/Primitives";
+import {
+  CountUp,
+  NumberedCard,
+  Photo,
+  Section,
+  SectionHeading,
+  TiltCard,
+} from "@/components/Primitives";
 import { WorldMap } from "@/components/WorldMap";
 import { useTranslation } from "@/lib/i18n";
 import { DEFAULT_DESCRIPTION, DEFAULT_TITLE, pageHead } from "@/lib/site";
@@ -24,6 +31,7 @@ export const Route = createFileRoute("/")({
 });
 
 const MARKET_IMAGES = [costaBlanca, madrid, barcelona];
+const MARKET_IMAGE_BASES = ["costa-blanca", "madrid", "barcelona-interior"];
 const TRUST_ICONS = [Globe2, MapPin, Scale];
 const STATS_CONFIG = [
   { value: 420, prefix: "€ ", suffix: "M+" },
@@ -219,13 +227,13 @@ function Home() {
                 className="relative overflow-hidden bg-navy-deep shadow-[var(--shadow-soft)] hover:shadow-[var(--shadow-deep)]"
                 max={6}
               >
-                <img
+                <Photo
                   src={MARKET_IMAGES[i]}
+                  base={MARKET_IMAGE_BASES[i]}
                   alt={m.city}
-                  width={800}
+                  sizes="(min-width: 768px) 384px, calc(100vw - 3rem)"
+                  width={1600}
                   height={1000}
-                  loading="lazy"
-                  decoding="async"
                   className="h-[26rem] w-full object-cover opacity-75 transition-[transform,opacity] duration-[900ms] ease-[cubic-bezier(0.22,1,0.36,1)] hover:scale-105"
                 />
                 <div

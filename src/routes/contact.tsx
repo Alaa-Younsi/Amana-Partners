@@ -4,7 +4,18 @@ import { useEffect, useId, useRef, useState } from "react";
 import { SiteLayout, PageHero } from "@/components/SiteLayout";
 import { Section } from "@/components/Primitives";
 import { useTranslation } from "@/lib/i18n";
+import { translations } from "@/lib/translations";
 import { breadcrumbJsonLd, contactPageJsonLd, CONTACT_EMAIL, pageHead } from "@/lib/site";
+
+/**
+ * Stable, locale-independent values submitted for the "area of interest"
+ * field — the English labels, indexed to match the displayed (possibly
+ * Arabic) options, so the inbox always reads the same regardless of the
+ * visitor's language.
+ */
+const INTEREST_VALUES = translations.en.contact.form.interests;
+
+type ErrorKind = "generic" | "rate" | "unavailable";
 
 export const Route = createFileRoute("/contact")({
   head: () => {
@@ -36,6 +47,7 @@ type Status = "idle" | "sending" | "sent" | "error";
 function Contact() {
   const { t } = useTranslation();
   const [status, setStatus] = useState<Status>("idle");
+  const [errorKind, setErrorKind] = useState<ErrorKind>("generic");
   const interestId = useId();
   const messageId = useId();
   const honeypotId = useId();
@@ -65,12 +77,26 @@ function Contact() {
         headers: { "content-type": "application/json" },
         body: JSON.stringify({ ...values, elapsedMs: Date.now() - mountedAt.current }),
       });
-      if (!response.ok) throw new Error(`Enquiry failed: ${response.status}`);
+      if (!response.ok) {
+        setErrorKind(
+          response.status === 429 ? "rate" : response.status === 503 ? "unavailable" : "generic",
+        );
+        setStatus("error");
+        return;
+      }
       setStatus("sent");
     } catch {
+      setErrorKind("generic");
       setStatus("error");
     }
   }
+
+  const errorText =
+    errorKind === "rate"
+      ? t.contact.form.errorRateLimited
+      : errorKind === "unavailable"
+        ? t.contact.form.errorUnavailable
+        : t.contact.form.errorMessage;
 
   function startOver() {
     mountedAt.current = Date.now();
@@ -175,7 +201,9 @@ function Contact() {
                     className="mt-3 w-full border border-border bg-transparent px-4 py-3 text-sm transition-colors duration-300 focus:border-gold focus:outline-none"
                   >
                     {t.contact.form.interests.map((interest, i) => (
-                      <option key={i}>{interest}</option>
+                      <option key={i} value={INTEREST_VALUES[i]}>
+                        {interest}
+                      </option>
                     ))}
                   </select>
                 </div>
@@ -224,7 +252,7 @@ function Contact() {
                   aria-live="polite"
                   className={`mt-5 text-xs ${status === "error" ? "text-destructive" : "text-muted-foreground"}`}
                 >
-                  {status === "error" ? t.contact.form.errorMessage : t.contact.form.confirmDefault}
+                  {status === "error" ? errorText : t.contact.form.confirmDefault}
                 </p>
               </form>
             )}
@@ -259,14 +287,15 @@ function Field({
   required?: boolean;
   autoComplete?: string;
 }) {
+  const id = useId();
   return (
     <div>
-      <label htmlFor={name} className="text-xs uppercase tracking-[0.22em] text-muted-foreground">
+      <label htmlFor={id} className="text-xs uppercase tracking-[0.22em] text-muted-foreground">
         {label}
         {required && <span aria-hidden="true"> *</span>}
       </label>
       <input
-        id={name}
+        id={id}
         name={name}
         type={type}
         required={required}

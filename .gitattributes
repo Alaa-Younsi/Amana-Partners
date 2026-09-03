@@ -1,0 +1,20 @@
+# Normalise every text file to LF in the repo, regardless of the
+# contributor's core.autocrlf setting. Prevents the "Delete ␍" prettier
+# failures that CRLF checkouts otherwise produce.
+* text=auto eol=lf
+
+# Binary assets — never touched by line-ending or diff machinery.
+*.png   binary
+*.jpg   binary
+*.jpeg  binary
+*.webp  binary
+*.gif   binary
+*.ico   binary
+*.woff  binary
+*.woff2 binary
+*.ttf   binary
+*.otf   binary
+
+# Generated / vendored — keep out of diffs and language stats.
+bun.lock              -diff linguist-generated
+src/routeTree.gen.ts  -diff linguist-generated

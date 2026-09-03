@@ -68,8 +68,21 @@ const CSP = [
   "upgrade-insecure-requests",
 ].join("; ");
 
+/**
+ * Trusted Types, shipped report-only for now. It can't break rendering in this
+ * mode — the browser just logs any DOM-XSS sink that would violate it — so
+ * it's a safe way to see whether the framework's hydration is TT-clean before
+ * a future move to enforcing. Add a `report-uri` once a collector exists.
+ */
+const CSP_REPORT_ONLY = [
+  CSP,
+  "require-trusted-types-for 'script'",
+  "trusted-types 'allow-duplicates'",
+].join("; ");
+
 const SECURITY_HEADERS: Record<string, string> = {
   "content-security-policy": CSP,
+  "content-security-policy-report-only": CSP_REPORT_ONLY,
   "x-content-type-options": "nosniff",
   "referrer-policy": "strict-origin-when-cross-origin",
   "x-frame-options": "DENY",

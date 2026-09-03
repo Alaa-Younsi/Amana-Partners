@@ -2,6 +2,52 @@ import { useEffect, useRef, useState, type ReactNode } from "react";
 
 import { useRevealOnScroll, useTilt } from "@/hooks/use-motion";
 
+/** Widths emitted by scripts/build-assets.mjs into /public/img. */
+const PHOTO_WIDTHS = [640, 960, 1280] as const;
+
+/**
+ * Responsive photo. `src` is the Vite-imported, content-hashed original
+ * (~1600px, the large-screen fallback); `base` is the file stem shared by the
+ * generated `/img/<base>-{640,960,1280}.webp` variants. `sizes` must describe
+ * the rendered width so the browser can pick the smallest sufficient file.
+ */
+export function Photo({
+  src,
+  base,
+  alt,
+  sizes,
+  className = "",
+  width = 1600,
+  height = 1000,
+  priority = false,
+}: {
+  src: string;
+  base: string;
+  alt: string;
+  sizes: string;
+  className?: string;
+  width?: number;
+  height?: number;
+  priority?: boolean;
+}) {
+  const srcSet =
+    PHOTO_WIDTHS.map((w) => `/img/${base}-${w}.webp ${w}w`).join(", ") + `, ${src} 1600w`;
+  return (
+    <img
+      src={src}
+      srcSet={srcSet}
+      sizes={sizes}
+      alt={alt}
+      width={width}
+      height={height}
+      loading={priority ? "eager" : "lazy"}
+      fetchPriority={priority ? "high" : undefined}
+      decoding="async"
+      className={className}
+    />
+  );
+}
+
 /** Section wrapper that drives the scroll-reveal of its `.reveal` children. */
 export function Section({
   children,
@@ -157,12 +203,22 @@ export function CountUp({
   }, [value, duration]);
 
   const rounded = value % 1 === 0 ? Math.round(display) : display.toFixed(1);
+  const final = value % 1 === 0 ? value : value.toFixed(1);
 
+  // The animated digits would otherwise be read out mid-count by a screen
+  // reader; expose the settled figure once and hide the ticking span.
   return (
     <span ref={ref}>
-      {prefix}
-      {rounded}
-      {suffix}
+      <span aria-hidden="true">
+        {prefix}
+        {rounded}
+        {suffix}
+      </span>
+      <span className="sr-only">
+        {prefix}
+        {final}
+        {suffix}
+      </span>
     </span>
   );
 }

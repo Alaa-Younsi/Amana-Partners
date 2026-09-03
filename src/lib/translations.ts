@@ -16,6 +16,12 @@ const en = {
     closeMenu: "Close menu",
     primaryNav: "Primary",
     mobileNav: "Mobile",
+    imageAlt: {
+      madridTwilight: "The Madrid skyline at twilight",
+      barcelonaInterior: "A refined interior in Barcelona",
+      costaBlanca: "The Costa Blanca coastline",
+      heroSpain: "A waterfront view in Spain",
+    },
   },
   nav: {
     home: "Home",
@@ -34,6 +40,8 @@ const en = {
     markets: ["GCC", "Spain", "Europe"],
     contactLabel: "Contact",
     rightsReserved: "All rights reserved.",
+    developedBy: "Website Developed by",
+    developerName: "Alaa Younsi",
     tagline: "GCC · Spain · Europe",
   },
   home: {
@@ -411,6 +419,10 @@ const en = {
         "Your enquiry is confidential and reviewed personally by a partner within one business day.",
       errorMessage:
         "Your enquiry could not be sent. Please try again, or email us directly at contact@amanapartnersllc.com.",
+      errorRateLimited:
+        "You've sent several enquiries in a short window. Please wait a few minutes and try again, or email us directly.",
+      errorUnavailable:
+        "Our enquiry system is briefly unavailable. Please email us directly at contact@amanapartnersllc.com.",
       orEmail: "Prefer email? Write to us at",
     },
   },
@@ -437,6 +449,12 @@ const ar: typeof en = {
     closeMenu: "إغلاق القائمة",
     primaryNav: "التنقل الرئيسي",
     mobileNav: "قائمة الجوال",
+    imageAlt: {
+      madridTwilight: "أفق مدريد عند الغسق",
+      barcelonaInterior: "تصميم داخلي راقٍ في برشلونة",
+      costaBlanca: "ساحل كوستا بلانكا",
+      heroSpain: "إطلالة على الواجهة البحرية في إسبانيا",
+    },
   },
   nav: {
     home: "الرئيسية",
@@ -455,6 +473,8 @@ const ar: typeof en = {
     markets: ["دول مجلس التعاون الخليجي", "إسبانيا", "أوروبا"],
     contactLabel: "للتواصل",
     rightsReserved: "جميع الحقوق محفوظة.",
+    developedBy: "تم تطوير الموقع بواسطة",
+    developerName: "علاء يونسي",
     tagline: "الخليج · إسبانيا · أوروبا",
   },
   home: {
@@ -831,6 +851,10 @@ const ar: typeof en = {
       confirmDefault: "استفساركم سري ويُراجَع شخصياً من قبل أحد الشركاء خلال يوم عمل واحد.",
       errorMessage:
         "تعذّر إرسال استفساركم. يرجى المحاولة مرة أخرى أو مراسلتنا مباشرة على contact@amanapartnersllc.com.",
+      errorRateLimited:
+        "لقد أرسلتم عدة استفسارات خلال فترة قصيرة. يرجى الانتظار بضع دقائق والمحاولة مجدداً، أو مراسلتنا مباشرة.",
+      errorUnavailable:
+        "نظام الاستفسارات غير متاح مؤقتاً. يرجى مراسلتنا مباشرة على contact@amanapartnersllc.com.",
       orEmail: "تفضّلون البريد الإلكتروني؟ راسلونا على",
     },
   },

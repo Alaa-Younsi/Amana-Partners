@@ -1,8 +1,5 @@
 @import "tailwindcss" source(none);
 @source "../src";
-@import "tw-animate-css";
-
-@custom-variant dark (&:is(.dark *));
 
 @theme inline {
   --radius-sm: calc(var(--radius) - 4px);
@@ -60,6 +57,11 @@ html[dir="rtl"] * {
 }
 
 :root {
+  /* The site is intentionally light-only — declare it so the browser paints
+     form controls, scrollbars and the canvas for a light UI even on a
+     dark-mode OS. */
+  color-scheme: light;
+
   --radius: 0.25rem;
 
   /* Brand palette — taken directly from the logo artwork */

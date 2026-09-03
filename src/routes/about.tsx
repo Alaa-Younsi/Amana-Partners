@@ -1,9 +1,9 @@
 import { createFileRoute } from "@tanstack/react-router";
 
 import { SiteLayout, PageHero } from "@/components/SiteLayout";
-import { Section, SectionHeading, TiltCard } from "@/components/Primitives";
+import { Photo, Section, SectionHeading, TiltCard } from "@/components/Primitives";
 import { useTranslation } from "@/lib/i18n";
-import { breadcrumbJsonLd, pageHead } from "@/lib/site";
+import { breadcrumbJsonLd, pageHead, personJsonLd } from "@/lib/site";
 import interior from "@/assets/barcelona-interior.webp";
 
 export const Route = createFileRoute("/about")({
@@ -22,6 +22,10 @@ export const Route = createFileRoute("/about")({
         {
           type: "application/ld+json",
           children: JSON.stringify(breadcrumbJsonLd("About", "/about")),
+        },
+        {
+          type: "application/ld+json",
+          children: JSON.stringify(personJsonLd()),
         },
       ],
     };
@@ -60,13 +64,11 @@ function About() {
               fill={false}
               className="overflow-hidden shadow-[var(--shadow-lift)]"
             >
-              <img
+              <Photo
                 src={interior}
-                alt="Amana Partners environment"
-                loading="lazy"
-                decoding="async"
-                width={1600}
-                height={1000}
+                base="barcelona-interior"
+                alt={t.common.imageAlt.barcelonaInterior}
+                sizes="(min-width: 768px) 460px, calc(100vw - 3rem)"
                 className="w-full object-cover"
               />
             </TiltCard>

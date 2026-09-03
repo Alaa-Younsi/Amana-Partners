@@ -17,14 +17,7 @@ export default defineConfig(({ mode, command }) => {
       // Vite 8 resolves tsconfig `paths` natively — no vite-tsconfig-paths needed.
       tsconfigPaths: true,
       alias: { "@": `${process.cwd()}/src` },
-      dedupe: [
-        "react",
-        "react-dom",
-        "react/jsx-runtime",
-        "react/jsx-dev-runtime",
-        "@tanstack/react-query",
-        "@tanstack/query-core",
-      ],
+      dedupe: ["react", "react-dom", "react/jsx-runtime", "react/jsx-dev-runtime"],
     },
     optimizeDeps: {
       include: [

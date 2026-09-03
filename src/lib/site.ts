@@ -3,6 +3,7 @@
  * sitemap, robots, Open Graph, JSON-LD) reads from here so there is exactly
  * one place to change the domain.
  */
+import { translations } from "@/lib/translations";
 
 // Override per-environment with VITE_SITE_URL (no trailing slash).
 export const SITE_URL = (
@@ -17,6 +18,9 @@ export const CONTACT_EMAIL = "contact@amanapartnersllc.com";
 
 /** Managing Partner's LinkedIn — the only social profile published so far. */
 export const LINKEDIN_URL = "https://www.linkedin.com/in/chaker-nouar-83317559";
+
+/** Managing Partner — named in `Person` structured data on the About page. */
+export const MANAGING_PARTNER = "Chaker Nouar";
 
 export const DEFAULT_TITLE =
   "Amana Partners — Cross-Border Investment Advisory for GCC Investors in Spain";
@@ -172,5 +176,52 @@ export function contactPageJsonLd() {
       "Request a private, confidential consultation with Amana Partners in Madrid, Dubai, or by secure video.",
     inLanguage: ["en", "ar"],
     about: { "@id": `${SITE_URL}/#organization` },
+  };
+}
+
+/**
+ * `Person` structured data for the Managing Partner, on the About page.
+ * Kept in English regardless of the viewed locale — structured data is for
+ * crawlers, and the canonical metadata is English too.
+ */
+export function personJsonLd() {
+  return {
+    "@context": "https://schema.org",
+    "@type": "Person",
+    "@id": `${SITE_URL}/#managing-partner`,
+    name: MANAGING_PARTNER,
+    jobTitle: "Managing Partner",
+    worksFor: { "@id": `${SITE_URL}/#organization` },
+    url: absoluteUrl("/about"),
+    sameAs: [LINKEDIN_URL],
+    knowsLanguage: ["English", "Arabic", "Spanish"],
+  };
+}
+
+/**
+ * `ItemList` of `Service` nodes built from the (English) services copy, so the
+ * six verticals can surface as individual offerings in search results.
+ */
+export function servicesJsonLd() {
+  return {
+    "@context": "https://schema.org",
+    "@type": "ItemList",
+    "@id": `${absoluteUrl("/services")}#services`,
+    itemListElement: translations.en.services.items.map((s, i) => ({
+      "@type": "ListItem",
+      position: i + 1,
+      item: {
+        "@type": "Service",
+        name: s.title,
+        description: s.body,
+        serviceType: s.title,
+        provider: { "@id": `${SITE_URL}/#organization` },
+        areaServed: [
+          { "@type": "Country", name: "Spain" },
+          { "@type": "Place", name: "Gulf Cooperation Council" },
+        ],
+        audience: { "@type": "Audience", audienceType: "GCC principals and family offices" },
+      },
+    })),
   };
 }

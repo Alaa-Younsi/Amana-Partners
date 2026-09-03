@@ -1,7 +1,7 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 
 import { SiteLayout, PageHero } from "@/components/SiteLayout";
-import { Section, TiltCard } from "@/components/Primitives";
+import { Photo, Section, TiltCard } from "@/components/Primitives";
 import { useTranslation } from "@/lib/i18n";
 import { breadcrumbJsonLd, pageHead } from "@/lib/site";
 import madrid from "@/assets/madrid.webp";
@@ -32,6 +32,14 @@ export const Route = createFileRoute("/opportunities")({
 });
 
 const DEAL_IMAGES = [hero, madrid, barcelona, costaBlanca, madrid, barcelona];
+const DEAL_IMAGE_BASES = [
+  "hero-spain",
+  "madrid",
+  "barcelona-interior",
+  "costa-blanca",
+  "madrid",
+  "barcelona-interior",
+];
 
 function Opportunities() {
   const { t } = useTranslation();
@@ -57,11 +65,11 @@ function Opportunities() {
                   reveal={false}
                   className="relative aspect-[16/10] overflow-hidden shadow-[var(--shadow-lift)]"
                 >
-                  <img
+                  <Photo
                     src={DEAL_IMAGES[i]}
+                    base={DEAL_IMAGE_BASES[i]}
                     alt={d.title}
-                    loading="lazy"
-                    decoding="async"
+                    sizes="(min-width: 768px) 680px, calc(100vw - 3rem)"
                     width={1600}
                     height={1000}
                     className="h-full w-full object-cover transition-transform duration-[900ms] ease-[cubic-bezier(0.22,1,0.36,1)] hover:scale-105"

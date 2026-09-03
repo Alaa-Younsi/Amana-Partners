@@ -336,6 +336,17 @@ export function SiteFooter() {
           <p>
             © {new Date().getFullYear()} Amana Partners LLC. {t.footer.rightsReserved}
           </p>
+          <p>
+            {t.footer.developedBy}{" "}
+            <a
+              href="https://alaayounsi.vercel.app/"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-ivory/70 underline underline-offset-2 transition-colors hover:text-ivory"
+            >
+              {t.footer.developerName}
+            </a>
+          </p>
           <p className="uppercase tracking-[0.24em]">{t.footer.tagline}</p>
         </div>
       </div>

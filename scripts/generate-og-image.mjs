@@ -1,12 +1,13 @@
 /**
  * Generates the social share (Open Graph) image at public/og-image.jpg.
  *
- * Composition: the coastal waterfront hero photo (1200×630, the 1.91:1 ratio
+ * Composition: the coastal waterfront hero photo (1200x630, the 1.91:1 ratio
  * every platform crops to) with a navy scrim in the lower third carrying the
  * Amana wordmark, a gold rule and the positioning line — a photographic,
  * link-preview-first card in the spirit of a premium editorial cover.
  *
- * Run: `bun scripts/generate-og-image.mjs`
+ * Run standalone: `node scripts/generate-og-image.mjs`
+ * Also invoked by scripts/build-assets.mjs before every build.
  * Fonts are resolved from the OS (Georgia + Arial), so no bundled fonts.
  */
 import { fileURLToPath } from "node:url";
@@ -25,7 +26,7 @@ const NAVY = "#0d1830";
 const IVORY = "#faf8f4";
 const GOLD = "#c0a063";
 
-// The "A" mark from favicon.svg (100×100 glyph), recoloured for a dark ground.
+// The "A" mark from favicon.svg (100x100 glyph), recoloured for a dark ground.
 const LOGO_MARK = `
     <path d="M50 12 L92 90 L74 90 L50 44 L26 90 L8 90 Z" fill="${IVORY}"/>
     <path d="M50 40 L66 62 L58 73 L50 60 L42 73 L34 62 Z" fill="${GOLD}"/>`;
@@ -72,10 +73,19 @@ const overlay = Buffer.from(`
         letter-spacing="3" fill="${IVORY}" opacity="0.6">MADRID · DUBAI</text>
 </svg>`);
 
-await sharp(SOURCE)
-  .resize(WIDTH, HEIGHT, { fit: "cover", position: "centre" })
-  .composite([{ input: overlay, top: 0, left: 0 }])
-  .jpeg({ quality: 88, mozjpeg: true })
-  .toFile(OUTPUT);
+export async function generateOgImage() {
+  await sharp(SOURCE)
+    .resize(WIDTH, HEIGHT, { fit: "cover", position: "centre" })
+    .composite([{ input: overlay, top: 0, left: 0 }])
+    .jpeg({ quality: 88, mozjpeg: true })
+    .toFile(OUTPUT);
+  return OUTPUT;
+}
 
-console.log(`Wrote ${OUTPUT}`);
+// Allow running this file directly.
+if (
+  import.meta.url === `file://${process.argv[1]}` ||
+  process.argv[1]?.endsWith("generate-og-image.mjs")
+) {
+  generateOgImage().then((out) => console.log(`Wrote ${out}`));
+}

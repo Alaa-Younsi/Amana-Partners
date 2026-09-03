@@ -16,6 +16,12 @@ dist-ssr
 .nitro
 *.local
 
+# Build-time generated binary assets (see scripts/build-assets.mjs).
+# src/generated/route-meta.ts is committed (like routeTree.gen.ts) so a bare
+# `tsc` works without first running the asset pipeline.
+public/img/
+public/favicon.ico
+
 # Secrets — .env.example is the tracked template and must stay committed
 .env
 .env.*
