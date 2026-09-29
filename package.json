@@ -1,6 +1,7 @@
 {
   "name": "amana-partners",
   "private": true,
+  "license": "SEE LICENSE IN LICENSE",
   "sideEffects": false,
   "type": "module",
   "engines": {
